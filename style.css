@@ -13,3 +13,11 @@ article {
     width: 1000px;
     line-height: 1.5em;
 }
+
+.codeblock {
+    display: inline-block;
+    width: 100%;
+    background-color: lightgrey;
+    padding: 6px 12px;
+    margin: 6px;
+}

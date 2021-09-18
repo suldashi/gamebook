@@ -7,18 +7,43 @@
 <body>
     <article>
         <h1>Chapter 1 - Hello World</h1>
-        <p>This book will explain and demonstrate several fundamental concepts in game programming. Just as programming in general
-            has its own vocabulary (class, function, variable, object), game programming also has a vocabulary that has been developed
-            over time. Concepts like <em>engine</em>, <em>game loop</em>, <em>camera</em>, <em>hitbox</em>, <em>timer</em>, <em>scheduler</em>,
-            <em>controls</em>, <em>sprite</em>, <em>physics</em>, <em>scene</em>, and many more are the basis upon which a game is built.
+        <h3>In this chapter, we'll set up our development environment and essential tools.</h3>
+        <p>
+            The first step in starting our project is to install Node.js. <a href="https://nodejs.org/">You can download Node.js from
+            the official website by clicking here,</a> and then install it on your system by following the instructions provided. Node.js
+            also comes bundled with a package manager called <code>npm</code>, which we'll use to install our dependencies and set up the project.
         </p>
-        <p>During the course of this book, we will go through each of those concepts and build upon them to create small but fun games.</p>
-        <p>The programming langage we'll be using is JavaScript. Despite the abundance of other langages and frameworks, today JavaScript is
-            the dominant language for building and publishing software. This is because software written in JavaScript can be deployed and published
-            with just a few clicks, and the users of the software can immediately use it by visiting a website.
+        <p>
+            Once Node.js has been installed, create a directory for your project, navigate to it using the command line and run the following command:
+            <code class="codeblock">npm init</code>
+            Follow the prompts and give your project a name of your choice along with some other basic details.
+            If the initialization was successful, you should see a file called <code>package.json</code> in the project's directory.
+            This file contains the essentail information about your project.
         </p>
-        <p>This is not a book that will teach the programming essentials, and some programming experience is required, particularly in JavaScript.</p>
+        <p>
+            Next, <code>index.html</code> and <code>bundle.js</code>
+            We will also need t
+            <pre class="codeblock">
+foo
+bar
+baz</pre>
+        </p>
+        <p>
+			In a web browser context, all JavaScript code that needs to be executed by the end user must ultimately be served through a <code>&lt;script&gt;</code> tag.
+			While making our game, eventually we will have to split our code into multiple files, and it's not viable to use <code>&lt;script&gt;</code> tags for each of them.
+			This makes it necessary to have a build (or bundling) step, where all of our small JavaScript files are merged into a single file, which is then served to our players.
+		</p>
+        <p>
+            The tool that does the bundling is called Webpack, and to run it we will first need to install and set up a Node.js project. 
+            <a href="https://nodejs.org/">You can download Node.js from the official website by clicking here,</a> and then install it on your system
+            by following the instructions provided.
+        </p>
+        
+        <p>
+
+        </p>
         <p><a href="../c2/">Chapter 2: Who knows?</a></p>
     </article>
+    <script src="bundle.js"></script>
 </body>
 </html>

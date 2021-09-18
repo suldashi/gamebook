@@ -1,0 +1,26 @@
+{
+  "name": "gamebook",
+  "version": "0.1.0",
+  "description": "A game development book",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/suldashi/gamebook.git"
+  },
+  "author": "Ermir Suldashi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/suldashi/gamebook/issues"
+  },
+  "homepage": "https://github.com/suldashi/gamebook#readme",
+  "dependencies": {
+    "http-server": "^13.0.2",
+    "webpack": "^5.53.0"
+  },
+  "devDependencies": {
+    "webpack-cli": "^4.8.0"
+  }
+}
