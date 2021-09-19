@@ -59,3 +59,14 @@ code {
 .code-inline {
     padding: 0 6px;
 }
+.file-display {
+    display: flex;
+    margin: 8px 0;
+}
+.foo {
+    display: inline-block;
+    height: 16px;
+    line-height: 16px;
+    margin-left: 8px;
+    font-family: 'Source Code Pro','Ubuntu Mono',monospace;
+}

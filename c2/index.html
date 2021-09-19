@@ -1,80 +1,18 @@
 <!doctype html>
 <html>
 <head>
-    <title>the gamedev book - Chapter 1 - Hello world</title>
+    <title>Chapter 2 - Bundling and distributing JavaScript code using Webpack</title>
     <link rel='stylesheet' href="../style.css">
 </head>
 <body>
     <article>
-        <h1>Chapter 1 - Hello World</h1>
-        <h3>In this chapter, we'll set up our development environment and essential tools.</h3>
-        <p>
-            The first step in starting our project is to install Node.js. <a target="_blank" href="https://nodejs.org/">You can download Node.js from
-            the official website by clicking here,</a> and then install it on your computer by following the provided instructions. Node.js
-            also comes bundled with a package manager called <code>npm</code> which we'll use to install our dependencies and set up the project.
-        </p>
-        <p>
-            Once Node.js has been installed, create a directory for your project, navigate to it using the command line and run the following command:
-            <code class="codeblock code-inline">npm init</code>
-            Follow the prompts and give your project a name of your choice along with some other basic details.
-            If the initialization was successful, you should see a file called <code>package.json</code> in the project's directory.
-            This file contains the essentail information about your project.
-        </p>
-        <p>
-            Next, we will create the <code>index.html</code> and <code>bundle.js</code> files. These files will serve the game we're making.
-            The <code>index.html</code> file should contain the following content:
-        </p>
-        <pre class="codeblock">
-<span class="hljs-meta">&lt;!doctype <span class="hljs-keyword">html</span>&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>Check out my awesome JavaScript game!<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Hello world, we're making a JavaScript video game!<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;bundle.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span></pre>
-        <p>
-            Note how we're importing the <code>bundle.js</code> file at the bottom of the <code>index.html</code> file. Let's create it
-            now, and add the following content to it:
-        </p>
-        <pre class="codeblock">
-const greeting <span class="hljs-operator">=</span> <span class="hljs-string">&quot;Welcome to our JavaScript game!&quot;</span><span class="hljs-comment">;</span>
-alert(greeting)<span class="hljs-comment">;</span></span></pre>
-        <p>
-            Finally, to serve the files we created to our users we'll need a suitable web server. <a target="_blank" href="https://www.npmjs.com/package/http-server">
-            A good option for our use is <code>http-server</code></a>, and we can install it easily on our project by typing the following command in our terminal:
-        </p>
-        <pre class="codeblock">
-npm install --save http-server</pre>
-        <p>
-            Once <code>http-server</code> is installed, we're ready to run our project. We can do that by typing this command in the terminal:
-        </p>
-        <pre class="codeblock">
-npx http-server</pre>
-        <p>
-            If the server was started successfully, we can finally see our project in action. Open your web browser, and navigate to
-            <a href="http://localhost:8080"><code>http://localhost:8080</code></a>. If you see someting similar to the screenshot below, congratulations, you've successfully
-            set up the base on which we'll build our game!
-        </p>
-            <img class="fit-width" alt="This screenshot from Google Chrome shows a successfully running web server that serves as the basis for our game" src="browser_success.png">
+        <h1>Chapter 2 - Bundling and distributing JavaScript code using Webpack</h1>
         <p>
 			In a web browser context, all JavaScript code that needs to be executed by the end user must ultimately be served through a <code>&lt;script&gt;</code> tag.
 			While making our game, eventually we will have to split our code into multiple files, and it's not viable to use <code>&lt;script&gt;</code> tags for each of them.
 			This makes it necessary to have a build (or bundling) step, where all of our small JavaScript files are merged into a single file, which is then served to our players.
 		</p>
-        <p>
-            The tool that does the bundling is called Webpack, and to run it we will first need to install and set up a Node.js project. 
-            <a href="https://nodejs.org/">You can download Node.js from the official website by clicking here,</a> and then install it on your system
-            by following the instructions provided.
-        </p>
-        
-        <p>
-
-        </p>
-        <p><a href="../c2/">Chapter 2: Who knows?</a></p>
+        <p><a href="../c3/">Chapter 3: Introduction to computer graphics using Pixi.js</a></p>
     </article>
-    <script src="bundle.js"></script>
 </body>
 </html>

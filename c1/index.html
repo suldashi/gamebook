@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-    <title>the gamedev book - Chapter 1 - Hello world and basic setup</title>
+    <title>Chapter 1 - Hello world and basic setup</title>
     <link rel='stylesheet' href="../style.css">
 </head>
 <body>
@@ -58,11 +58,27 @@ npx http-server</pre>
             <a href="http://localhost:8080"><code>http://localhost:8080</code></a>. If you see someting similar to the screenshot below, congratulations, you've successfully
             set up the base on which we'll build our game!
         </p>
-            <img class="fit-width" alt="This screenshot from Google Chrome shows a successfully running web server that serves as the basis for our game" src="browser_success.png">
+        <img class="fit-width" src="img/browser_success.png" alt="This screenshot from Google Chrome shows a successfully running web server that serves as the basis for our game">
         <p>
-            In the next chapter, we'll explore the basics of computer graphics and draw some objects on the screen.
+            At this time, your project directory should look something like this:
         </p>
-        <p><a href="../c2/">Chapter 2: Introduction to computer graphics using Pixi.js</a></p>
+        <div>
+            <div class="file-display"><img src='img/folder-desktop.svg' width="16" height="16"> <span class='foo'>node_modules</span></div>
+            <div class="file-display"><img src='img/js-file.svg' width="16" height="16"> <span class='foo'>bundle.js</span></div>
+            <div class="file-display"><img src='img/html5-black.svg' width="16" height="16"> <span class='foo'>index.html</span></div>
+            <div class="file-display"><img src='img/text-file-line.svg' width="16" height="16"> <span class='foo'>package-lock.json</span></div>
+            <div class="file-display"><img src='img/text-file-line.svg' width="16" height="16"> <span class='foo'>package.json</span></div>
+        </div>
+        <p>
+            Note the new <code>node_modules</code> directory and the <code>package-lock.json</code> file. <code>node_modules</code> is where the packages
+            installed by <code>npm</code> are stored, and the <code>package-lock.json</code> file is where detailed information about the installed packages
+            is stored. For the most part we won't need to ever interact with <code>node_modules</code> or <code>package-lock.json</code> directly.
+        </p>
+        <p>
+            In the next chapter we will set up Webpack, which allows us to bundle multiple JavaScript into one single bundled file which is
+            suitable for distribution to our users.
+        </p>
+        <p><a href="../c2/">Chapter 2 - Bundling and distributing JavaScript code using Webpack</a></p>
     </article>
     <script src="bundle.js"></script>
 </body>
