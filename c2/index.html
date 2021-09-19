@@ -1,12 +1,12 @@
 <!doctype html>
 <html>
 <head>
-    <title>the gamedev book - Chapter 1 - Hello world and basic setup</title>
+    <title>the gamedev book - Chapter 1 - Hello world</title>
     <link rel='stylesheet' href="../style.css">
 </head>
 <body>
     <article>
-        <h1>Chapter 1 - Hello World and basic setup</h1>
+        <h1>Chapter 1 - Hello World</h1>
         <h3>In this chapter, we'll set up our development environment and essential tools.</h3>
         <p>
             The first step in starting our project is to install Node.js. <a target="_blank" href="https://nodejs.org/">You can download Node.js from
@@ -60,9 +60,20 @@ npx http-server</pre>
         </p>
             <img class="fit-width" alt="This screenshot from Google Chrome shows a successfully running web server that serves as the basis for our game" src="browser_success.png">
         <p>
-            In the next chapter, we'll explore the basics of computer graphics and draw some objects on the screen.
+			In a web browser context, all JavaScript code that needs to be executed by the end user must ultimately be served through a <code>&lt;script&gt;</code> tag.
+			While making our game, eventually we will have to split our code into multiple files, and it's not viable to use <code>&lt;script&gt;</code> tags for each of them.
+			This makes it necessary to have a build (or bundling) step, where all of our small JavaScript files are merged into a single file, which is then served to our players.
+		</p>
+        <p>
+            The tool that does the bundling is called Webpack, and to run it we will first need to install and set up a Node.js project. 
+            <a href="https://nodejs.org/">You can download Node.js from the official website by clicking here,</a> and then install it on your system
+            by following the instructions provided.
         </p>
-        <p><a href="../c2/">Chapter 2: Introduction to computer graphics using Pixi.js</a></p>
+        
+        <p>
+
+        </p>
+        <p><a href="../c2/">Chapter 2: Who knows?</a></p>
     </article>
     <script src="bundle.js"></script>
 </body>
