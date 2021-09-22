@@ -8,11 +8,60 @@
     <article>
         <h1>Chapter 2 - Bundling and distributing JavaScript code using Webpack</h1>
         <p>
-			In a web browser context, all JavaScript code that needs to be executed by the end user must ultimately be served through a <code>&lt;script&gt;</code> tag.
-			While making our game, eventually we will have to split our code into multiple files, and it's not viable to use <code>&lt;script&gt;</code> tags for each of them.
-			This makes it necessary to have a build (or bundling) step, where all of our small JavaScript files are merged into a single file, which is then served to our players.
+			In a web browser context, all JavaScript code that needs to be executed by the end user must ultimately be served through a
+            <code>&lt;script&gt;</code> tag. While making our game, eventually we will have to split our code into multiple files,
+            and it's not viable to use <code>&lt;script&gt;</code> tags for each of them. This makes it necessary to have a build
+            (or bundling) step, where all of our small JavaScript files are merged into a single file, which is then served to our players.
 		</p>
-        <p><a href="../c3/">Chapter 3: Introduction to computer graphics using Pixi.js</a></p>
+        <p>
+            The tool we'll be using is called Webpack, and it can be easily installed using <code>npm</code>. Type the following command
+            in the terminal to install Webpack:
+        </p>
+        <pre class="codeblock">npm install -D webpack webpack-cli</pre>
+        <p>
+            Note the difference in the command syntax from the previous section when we installed <code>http-server</code>. The first
+            difference is the <code>-D</code> parameter, which means that Webpack is a development dependency and won't be included
+            in the code that the user sees. In addition, we are installing two packages at once, both <code>webpack</code> and <code>webpack-cli</code>.
+            Webpack is the tool that will do the actual bundling operation, while Webpack CLI allows us to initiate the bundling
+            process using commands typed in the terminal.
+        </p>
+        <p>
+            Before we're ready to use Webpack, we'll also need to create a small configuration file. Create a file with the <code>webpack.config.json</code>
+            name in your project's root directory and place the following content in it:
+        </p>
+        <pre class="codeblock">
+const <span class="hljs-built_in">path</span> = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;path&#x27;</span>);
+
+<span class="hljs-built_in">module</span>.exports = {
+  entry: <span class="hljs-built_in">path</span>.resolve(__dirname, <span class="hljs-string">&#x27;src&#x27;</span>, <span class="hljs-string">&#x27;index.js&#x27;</span>),
+  mode: <span class="hljs-string">&#x27;development&#x27;</span>,
+  <span class="hljs-built_in">output</span>: {
+    <span class="hljs-built_in">path</span>: <span class="hljs-built_in">path</span>.resolve(__dirname),
+    filename: <span class="hljs-string">&#x27;./bundle.js&#x27;</span>,
+  },
+};</pre>
+        <p>
+            What this config file does is instruct Webpack to take the <code>src/index.js</code> file an whatever is imported in it,
+            bundle it into one single file, and put the output file called <code>bundle.js</code> in the root directory of our project.
+        </p>
+        <p>
+            At the moment we don't have a <code>src</code> directory, so let's go ahead and create it. In the <code>src</code> directory
+            let's also create a file called <code>index.js</code> and put the following code in it:
+        </p>
+        <pre class="codeblock">
+const greeting <span class="hljs-operator">=</span> <span class="hljs-string">&quot;Hello Webpack!&quot;</span><span class="hljs-comment">;</span>
+alert(greeting)<span class="hljs-comment">;</span></span></pre>
+        <p>
+            We're finally ready to try everything out! Go ahead and type <code class="codeblock code-inline">npx webpack</code> in the terminal,
+            and if the command ran successfully, we should be able to navigate to <a href="http://localhost:8080">http://localhost:8080</a> on
+            the browser. If we get something similar to the screenshot below, then the whole process was a success:
+        </p>
+        <img class="fit-width" src="img/webpack_success.png" alt="This screenshot from Google Chrome shows the code bundled by Webpack has been successfully added to our page">
+        <p>
+            In the next chapter, we'll get glimpses of our game by displaying shapes on the screen while also learning about the fundamentals
+            of computer graphics.
+        </p>
+        <p><a href="../c3/">Chapter 3 - Introduction to computer graphics using Pixi.js</a></p>
     </article>
 </body>
 </html>
