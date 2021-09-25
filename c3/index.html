@@ -2,23 +2,51 @@
 <html>
 <head>
     <title>Chapter 3 - Introduction to computer graphics using Pixi.js</title>
+    <link rel='stylesheet' href="../prism.css">
     <link rel='stylesheet' href="../style.css">
 </head>
-<body>
+<body class="line-numbers">
     <article>
         <h1>Chapter 3 - Introduction to computer graphics using Pixi.js</h1>
         <p>
-			Almost every video game needs to display something to the screen so that the player
-            can see the game (the Latin root word of video – <em>videre</em>, means to see). In this article we’ll
+			Almost every video game needs to display something to the screen so that the player can see and
+            interact with  the game (the Latin root word of video – <em>videre</em>, means to see). In this article we’ll
             explain the basics of display systems and how to draw basic shapes on the screen. These basic
             shapes will be the fundamental building blocks of all interactive elements in any video game.
 		</p>
         <p>
             JavaScript on the web offers many different ways of drawing 2D shapes and graphics on the screen, but
-            one of the best ways to do it is by using the <a target="_blank" href="https://pixijs.com/"><code>pixi.js</code></a> library. We can 
-            install <code>pixi.js</code> by typing the following command in the terminal:
+            one of the best ways to do it is by using the <a target="_blank" href="https://pixijs.com/"><strong class="code-inline">pixi.js</strong></a>
+            library. We can install <strong class="code-inline">pixi.js</strong> by typing the following command in the terminal:
         </p>
-        <pre class="codeblock">npm install pixi.js</pre>
+        <pre><code class="language-shell">npm install pixi.js</code></pre>
+        <p>
+            Once the installation is complete, add the following code to the <strong class="code-inline">index.js</strong> file:
+        </p>
+        <pre><code class="language-js">import * as PIXI from 'pixi.js'
+
+let app = new PIXI.Application({ width: 640, height: 360 });
+document.body.appendChild(app.view);
+
+let obj = new PIXI.Graphics();
+obj.beginFill(0x00FF00);
+obj.drawRect(60, 120, 200, 100);
+app.stage.addChild(obj);</code></pre>
+        <p>
+            Let's examine this code line by line and explain what it does.
+        </p>
+        <p>
+            In line 1, we are importing <strong class="code-inline">pixi.js</strong> into our game. <strong class="code-inline">pixi.js</strong>
+            was installed using <strong class="code-inline">npm</strong>, and once imported we have access to it through the <strong class="code-inline">PIXI</strong>
+            variable.
+        </p>
+        <p>
+            In line 3, we're creating an instance of a <strong class="code-inline">PIXI</strong> application, and passing an options object,
+            in particular this options object has two important properties, <strong class="code-inline">width</strong> and
+            <strong class="code-inline">height</strong>. These properties set the drawing area of the <strong class="code-inline">PIXI</strong>
+            application to be 640 pixels wide and 360 pixels tall.
+        </p>
     </article>
+    <script src="../prism.js"></script>
 </body>
 </html>
