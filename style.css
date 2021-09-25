@@ -29,16 +29,10 @@ article {
 p {
     text-align: justify;
 }
-
-pre {
-    padding: 0;
-    margin: 0;
-}
-
-code {
-    font-size: 16px;
-    padding: 0 4px;
-    background-color: #f7f7f7;
+strong.code-inline {
+    font-family: 'Source Code Pro','Ubuntu Mono',monospace;
+    font-style: normal;
+    font-weight: 600;
 }
 
 .fit-width {
@@ -46,24 +40,11 @@ code {
     border: 1px solid #e1e7e6;
 }
 
-.codeblock {
-    width: 100%;
-    border-radius: 2px;
-    background: #f0f0f0;
-    border: 1px solid #e1e7e6;
-    color: black;
-    padding: 6px 12px;
-    font-family: 'Source Code Pro','Ubuntu Mono',monospace;
-}
-
-.code-inline {
-    padding: 0 6px;
-}
 .file-display {
     display: flex;
     margin: 8px 0;
 }
-.foo {
+.dir-row {
     display: inline-block;
     height: 16px;
     line-height: 16px;
