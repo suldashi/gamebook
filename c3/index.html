@@ -33,20 +33,70 @@ obj.beginFill(0x00FF00);
 obj.drawRect(60, 120, 200, 100);
 app.stage.addChild(obj);</code></pre>
         <p>
-            Let's examine this code line by line and explain what it does.
+            Every time we make a change to the JavaScript code, we have to run Webpack to create a fresh bundle. As a reminder, the command is:
+        </p>
+        <pre><code class="language-shell">npx webpack</code></pre>
+        <p>
+            If Webpack runs successfully, you will see something like the following on your screen:
+        </p>
+        <div id="pixi-root"></div>
+        <p>
+            Congratulations, we've created our first PIXI scene! While a green square in a black background might not seem impressive at first,
+            it means that the preparatory steps are complete and we're ready for the good stuff.
+            <a href="https://rampantgames.com/blog/?p=7745" target='_blank'>In the game development industry this is sometimes called a black
+            triangle moment.</a> 
+        </p>
+        <p>
+            Let's examine what we just showed the screen, starting with the code:
         </p>
         <p>
             In line 1, we are importing <strong class="code-inline">pixi.js</strong> into our game. <strong class="code-inline">pixi.js</strong>
-            was installed using <strong class="code-inline">npm</strong>, and once imported we have access to it through the <strong class="code-inline">PIXI</strong>
-            variable.
+            was installed earlier using <strong class="code-inline">npm</strong>, and once imported we have access to it through the
+            <strong class="code-inline">PIXI</strong> variable.
         </p>
         <p>
-            In line 3, we're creating an instance of a <strong class="code-inline">PIXI</strong> application, and passing an options object,
-            in particular this options object has two important properties, <strong class="code-inline">width</strong> and
-            <strong class="code-inline">height</strong>. These properties set the drawing area of the <strong class="code-inline">PIXI</strong>
-            application to be 640 pixels wide and 360 pixels tall.
+            In line 3, we're creating an instance of a PIXI application, and passing an options object, in particular this options
+            object has two important properties, <strong class="code-inline">width</strong> and <strong class="code-inline">height</strong>.
+            These properties set the drawing area of the PIXI application to be 640 pixels wide and 360 pixels tall.
         </p>
+        <p>
+            In line 4, we're adding the Pixi application we just added to the end of our HTML document. Note that the
+            <strong class="code-inline">appendChild()</strong> method is available to most HTML elements, so we can easily place the
+            Pixi application anywhere on the page, not just at the end (left as an exercise to the reader).
+        </p>
+        <p>
+            In line 6, we're creating an instance of a <strong class="code-inline">PIXI.Graphics</strong> class, which is then used to
+            draw geometric shapes on the screen. Regardless of how many shapes we want to draw, we will only need one instance of this class.
+        </p>
+        <p>
+            In line 7, we set the fill color of all subsequent shapes to a bright green. The color argument is given in hexadecimal format,
+            which is widely used both in web development but also in graphic design. In the 
+            <code>0x<span style="color: #FF0000;">00</span><span style="color: #009900;">FF</span><span style="color: #0000FF;">00</span></code>
+            number, the first two symbols, <code>0x</code>, indicate that
+            this is a hexadecimal number, the the two symbols, <code style="color: #FF0000;">00</code> indicate zero brightness on the red color,
+            after that, the next two symbols, <code style="color: #009900;">FF</code>, indicate maximum brightness of the green color, and the final
+            two symbols, <code style="color: #0000FF;">00</code>, indicate zero brightness on the blue color.
+        </p>
+        <p>
+            In line 8, we draw the green rectangle. The four parameters are essential in positioning the rectangle in the scene. In computer graphics,
+            pixels are counted from the top-left, or in mathematical terms, the origin of the coordinate system is the top-left, and every other pixel
+            is referred to in relation to this origin point. In particular, the rectangle is set to be 60 pixels to the right and 120 pixels to the
+            bottom of the origin, and is set to be 200 pixels wide and 100 pixels tall. Have a look at the image below for a visual aid in how this
+            looks in practice:
+        </p>
+        <img src="dimensions.png" class="fit-width" />
+        <p>
+            Finally in line 9, we add the graphics instance into the PIXI stage. The PIXI stage is an instance of the
+            <strong class="code-inline">PIXI.Container</strong> class, which is used to organize graphical objects, and is broadly analogous
+            to the <strong class="code-inline">&lt;div&gt;</strong> tag in HTML.
+        </p>
+        <p>
+            In the next chapter, we'll set up the game loop, a fundametal component of game programming.
+        </p>
+        <p><a href="../c4/">Chapter 4 - The game loop</a></p>
     </article>
     <script src="../prism.js"></script>
+    <script src="../pixi.min.js"></script>
+    <script src="hello.js"></script>
 </body>
 </html>
