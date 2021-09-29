@@ -9,11 +9,25 @@
 <body class="line-numbers">
     <article>
         <h1>Chapter 4 - The game loop</h1>
-        <div id="pixi-root"></div>
+        <p>
+            In a video game, the game loop is how the game advances forward in time. 
+        </p>
+        <p>
+            The game loop is a type of infinite loop, and during each repetition (also called a frame),
+            it takes input from the player, updates the world, and renders the results. However, instead of running
+            as fast as possible like a <strong class="code-inline">while(true) { ... }</strong> loop, the game
+            loop runs at a predictable and fixed interval called a timestep.
+        </p>
+        <p>
+            Writing our own game loop from scratch is a difficult and unnecessary process when we can get a
+            <a href="https://www.npmjs.com/package/mainloop.js" target="_blank">high quality implementation called <strong class="code-inline">mainloop.js</strong></a>
+            from <strong class="code-inline">npm</strong>. Type the following command to install it on our project:
+        </p>
+        <pre><code class="language-shell">npm install mainloop.js</code></pre>
+        <p>Don't forget to bundle</p>
         <p><a href="../c4/">Chapter 5 - I'll figure something out</a></p>
     </article>
     <script src="../prism.js"></script>
     <script src="../pixi.min.js"></script>
-    <script src="hello.js"></script>
 </body>
 </html>

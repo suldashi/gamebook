@@ -35,6 +35,10 @@ p {
     text-align: justify;
 }
 
+code, pre {
+    font-family: 'Source Code Pro','Ubuntu Mono',monospace;
+}
+
 strong.code-inline {
     font-family: 'Source Code Pro','Ubuntu Mono',monospace;
     font-style: normal;
