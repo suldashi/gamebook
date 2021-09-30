@@ -12,6 +12,7 @@
         <p>
             In a video game, the game loop is how the game advances forward in time. 
         </p>
+        <div id="pixi-root"></div>
         <p>
             The game loop is a type of infinite loop, and during each repetition (also called a frame),
             it takes input from the player, updates the world, and renders the results. However, instead of running
@@ -20,14 +21,77 @@
         </p>
         <p>
             Writing our own game loop from scratch is a difficult and unnecessary process when we can get a
-            <a href="https://www.npmjs.com/package/mainloop.js" target="_blank">high quality implementation called <strong class="code-inline">mainloop.js</strong></a>
-            from <strong class="code-inline">npm</strong>. Type the following command to install it on our project:
+            <a href="https://www.npmjs.com/package/mainloop.js" target="_blank">high quality implementation called
+            <strong class="code-inline">mainloop.js</strong></a> from <strong class="code-inline">npm</strong>.
+            Type the following command to install it on our project:
         </p>
         <pre><code class="language-shell">npm install mainloop.js</code></pre>
-        <p>Don't forget to bundle</p>
+        <p>
+            Once <strong class="code-inline">mainloop.js</strong> installed, we can import it similarly to how we
+            imported PIXI. We also have access to the <strong class="code-inline">MainLoop.setUpdate()</strong> function,
+            here we can set the callback that will be called each frame. In addition, we can call the 
+            <strong class="code-inline">MainLoop.start()</strong> function to get the loop working. The following code
+            is responsible for achieving the effect at the start of the article, let's go through it and explain the new
+            stuff:
+        </p>
+        <pre><code class="language-js">import * as PIXI from 'pixi.js'
+import * as MainLoop from 'mainloop.js';
+
+let xSpeed = 1;
+let ySpeed = 1;
+
+let xPosition = 60;
+let yPosition = 120;
+
+let gameWidth = 640;
+let gameHeight = 360;
+
+let rectWidth = 200;
+let rectHeight = 100;
+let rectColor = randomColor();
+
+let app = new PIXI.Application({ width: gameWidth, height: gameHeight });
+document.body.appendChild(app.view);
+
+let obj = new PIXI.Graphics();
+app.stage.addChild(obj);
+MainLoop.setUpdate(() => {
+    obj.clear();
+    obj.beginFill(rectColor);
+    obj.drawRect(xPosition, yPosition, rectWidth, rectHeight);
+    xPosition += xSpeed;
+    yPosition += ySpeed;
+    if(xPosition + rectWidth === gameWidth) {
+        xSpeed = -1;
+        rectColor = randomColor();
+    }
+    if(xPosition === 0) {
+        xSpeed = 1;
+        rectColor = randomColor();
+    }
+    if(yPosition + rectHeight === gameHeight) {
+        ySpeed = -1;
+        rectColor = randomColor();
+    }
+    if(yPosition === 0) {
+        ySpeed = 1;
+        rectColor = randomColor();
+    }
+});
+
+MainLoop.start();
+
+
+function randomColor() {
+    let red = Math.floor(Math.random()*256);
+    let green = Math.floor(Math.random()*256);
+    let blue = Math.floor(Math.random()*256);
+    return (red &lt;&lt; 16) + (green &lt;&lt; 8) + blue;
+}</code></pre>
         <p><a href="../c4/">Chapter 5 - I'll figure something out</a></p>
     </article>
     <script src="../prism.js"></script>
     <script src="../pixi.min.js"></script>
+    <script src="./bundle.js"></script>
 </body>
 </html>

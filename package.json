@@ -19,6 +19,7 @@
   "homepage": "https://github.com/suldashi/gamebook#readme",
   "dependencies": {
     "http-server": "^13.0.2",
+    "mainloop.js": "^1.0.4",
     "webpack": "^5.53.0"
   },
   "devDependencies": {
