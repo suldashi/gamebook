@@ -30,57 +30,59 @@
             Once <strong class="code-inline">mainloop.js</strong> installed, we can import it similarly to how we
             imported PIXI. We also have access to the <strong class="code-inline">MainLoop.setUpdate()</strong> function,
             here we can set the callback that will be called each frame. In addition, we can call the 
-            <strong class="code-inline">MainLoop.start()</strong> function to get the loop working. The following code
-            is responsible for achieving the effect at the start of the article, let's go through it and explain the new
-            stuff:
+            <strong class="code-inline">MainLoop.start()</strong> function to get the loop working.
+        </p>
+        <p>
+            The following code is responsible for the effect at the start of the article. We've defined a colored rectangle
+            which moves diagonally, and when it reaches the edges of the scene, it will switch directions away from the edge
+            while at the same time getting a new color.
         </p>
         <pre><code class="language-js">import * as PIXI from 'pixi.js'
 import * as MainLoop from 'mainloop.js';
 
-let xSpeed = 1;
-let ySpeed = 1;
+let xVelocity = 1;
+let yVelocity = 1;
 
 let xPosition = 60;
 let yPosition = 120;
 
-let gameWidth = 640;
-let gameHeight = 360;
+const gameWidth = 640;
+const gameHeight = 360;
 
-let rectWidth = 200;
-let rectHeight = 100;
+const rectWidth = 200;
+const rectHeight = 100;
 let rectColor = randomColor();
 
-let app = new PIXI.Application({ width: gameWidth, height: gameHeight });
+const app = new PIXI.Application({ width: gameWidth, height: gameHeight });
 document.body.appendChild(app.view);
 
-let obj = new PIXI.Graphics();
+const obj = new PIXI.Graphics();
 app.stage.addChild(obj);
 MainLoop.setUpdate(() => {
     obj.clear();
     obj.beginFill(rectColor);
     obj.drawRect(xPosition, yPosition, rectWidth, rectHeight);
-    xPosition += xSpeed;
-    yPosition += ySpeed;
+    xPosition += xVelocity;
+    yPosition += yVelocity;
     if(xPosition + rectWidth === gameWidth) {
-        xSpeed = -1;
+        xVelocity = -1;
         rectColor = randomColor();
     }
     if(xPosition === 0) {
-        xSpeed = 1;
+        xVelocity = 1;
         rectColor = randomColor();
     }
     if(yPosition + rectHeight === gameHeight) {
-        ySpeed = -1;
+        yVelocity = -1;
         rectColor = randomColor();
     }
     if(yPosition === 0) {
-        ySpeed = 1;
+        yVelocity = 1;
         rectColor = randomColor();
     }
 });
 
 MainLoop.start();
-
 
 function randomColor() {
     let red = Math.floor(Math.random()*256);
@@ -88,7 +90,87 @@ function randomColor() {
     let blue = Math.floor(Math.random()*256);
     return (red &lt;&lt; 16) + (green &lt;&lt; 8) + blue;
 }</code></pre>
-        <p><a href="../c4/">Chapter 5 - I'll figure something out</a></p>
+        <p>
+            Let's go through the code an explain some of the new things we added:
+        </p>
+        <p>
+            In line 2, we're importing <strong class="code-inline">mainloop.js</strong> and assigning it
+            into a variable called <strong class='code-inline'>MainLoop</strong>.
+        </p>
+        <p>
+            In lines 4 and 5, we're defining a horizontal and vertical velocity for our rectangle. It's
+            important to take note of the units, the values 1 here mean 1 pixel per frame. In a following
+            article we'll be examining this in more detail, and how we can move to more natural units such
+            as meters per second.
+        </p>
+        <p>
+            In lines 7 and 8 we define the horizontal and vertical position of the rectangle. Much like the
+            entire scene, the rectangle also has an origin point, and it also is defined as the top-left corner
+            (vertex) of the rectangle. This means that at the start of the scene the rectangle's top-left corner
+            will be 60 pixels away from the left of the scene, and 120 pixels away from top of the scene.
+        </p>
+        <p>
+            In line 10 and 11 we've defined the width and height of the scene. Similarly, in lines 13 and 14
+            we have defined the width and height of the rectangle. Note the <strong class='code-inline'>const</strong>
+            keyword, these values will not change while the loop is running.
+        </p>
+        <p>
+            In line 15 we're defining the color of the rectangle. Note how we're calling a function called
+            <strong class="code-inline">randomColor()</strong> which is defined in line 48. This function generates
+            a random RGB color every time it's called.
+        </p>
+        <p>
+            Importantly, in line 22 we call the <strong class="code-inline">MainLoop.setUpdate()</strong> function,
+            where we define a callback that is called every frame. Normally a large portion of a game's code is
+            inside such a function, since the game needs to advance forward to be able to give the illusion of motion.
+            By default, the callback is called 60 times per second, or 60 fps (frames per second).
+        </p>
+        <p>
+            Inside the callback, in line 23 we clear all geometric shapes that already exist in the scene. This is an
+            important step since if we don't do it the shapes from previous frames will still be in the scene when we
+            want to draw something new. For this reason, in every frame it's a good idea to clear the whole scene
+            and start fresh.
+        </p>
+        <p>
+            In line 24, we set the rectangle's color to the random color we defined earlier. In line 25 we draw the rectangle
+            on the positions defined by <strong class='code-inline'>xPosition</strong> and <strong class='code-inline'>yPosition</strong>.
+            Important to note that these variables change their value every frame, so every frame the position of the rectangle will be
+            different than the last.
+        </p>
+        <p>
+            The changing of the <strong class='code-inline'>xPosition</strong> and <strong class='code-inline'>yPosition</strong> happens
+            in lines 26 and 27. If at the start of the scene the value of <strong class='code-inline'>xPosition</strong> is 200, in
+            the next frame it will be 201, the one after that 202, and so on.
+        </p>
+        <p>
+            Lines 28 through 43 define the functionality of the rectangle bouncing from the edges of the scene. In
+            all these cases we set a new value for <strong class='code-inline'>rectColor</strong>, meaning that
+            every time the rectangle touches one of the walls it will get a new random color.
+        </p>
+        <p>
+            In line 28, we check if the right side of the rectangle touches the right side of the scene. Because
+            the <strong class='code-inline'>xPosition</strong> defines the left edge of the rectangle, we need to
+            add the <strong class='code-inline'>rectWidth</strong> to it to get the position of the right edge.
+        </p>
+        <p>
+            In line 32 we check if the left side of the rectangle touches the left side of the scene. In our case
+            the left side of the scene is defined as 0, and this check is simpler than the one for the right side.
+        </p>
+        <p>
+            In line 36 we do a similar check to the one in line 28, but this time it's for the vertical direction.
+            If the bottom of the rectangle touches the bottom of the scene, the <strong class='code-inline'>yVelocity</strong>
+            is set to -1, and in the next frame the rectangle will start to move upward instead of downward.
+        </p>
+        <p>
+            Again in line 40 we check if the top of the rectangle touches the top of the scene, and if so, set the
+            <strong class='code-inline'>yVelocity</strong> to 1. In the next frame the rectangle will start to move
+            downward.
+        </p>
+        <p>
+            Finally in line 46 we call <strong class='code-inline'>MainLoop.start()</strong> which starts the game loop.
+            This loop will run continously until we either stop it or close the page.
+        </p>
+        <p><a href="../c5/">Chapter 5 - The timestep</a></p>
     </article>
     <script src="../prism.js"></script>
     <script src="../pixi.min.js"></script>
