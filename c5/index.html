@@ -10,7 +10,24 @@
     <article>
         <h1>Chapter 5 - The timestep</h1>
         <p>
-            The timestep (sometimes time step) is the time it takes for one frame of the game loop to finish.
+            The timestep (or delta time) is the time it takes for one frame of the game loop to finish. If our game loop
+            runs at 60 frames per second, then the timestep of our game will be 1/60th of a second,
+            which is roughly 16.6666 milliseconds.
+        </p>
+        <p>
+            The existence of the timestep has two very important consequences. The first is that when making
+            our game, every frame has a time "budget" of 16.6666 milliseconds, meaning that every calculation,
+            every rendering on the screen, every piece of code that runs in a frame needs to complete within
+            that 16.6666 milliseconds window. If this deadline is missed, the game may slow down, feel choppy,
+            or display irregular behavior.
+        </p>
+        <p>
+            The other consequence is that we have to take into account the timestep for every calculation of motion
+            in our game. For example, if we have an object that moves at 125 units per second, then this object
+            should move at around 2.083333 units per frame. This result is achieved by taking our timestep, which is
+            16.6666 milliseconds and converting it into seconds by dividing it by 1000. The result is 0.0166666 seconds
+            per frame. Next, we multiply the 125 units per second with the 0.0166666 seconds per frame to get the final
+            result of 2.083333 units per frame.
         </p>
         <div id="pixi-root"></div>
         
