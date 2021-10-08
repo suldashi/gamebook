@@ -43,6 +43,10 @@ p {
     margin-bottom: 0;
 }
 
+.copyable-formula {
+    font-size: 0;
+}
+
 code, pre {
     font-family: 'Source Code Pro','Ubuntu Mono',monospace;
 }

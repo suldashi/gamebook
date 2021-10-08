@@ -17,22 +17,24 @@
         <p>
             A vector is a mathematical (or geometric) object that has a magnitude and direction. There are many
             ways to represent a vector, but the most common one is the Cartesian vector. In 2D, this vector has two
-            components, <math><mi>x</mi></math> and <math><mi>y</mi></math>, and these components represent how far
-            along is a vector displaced in the <math><mi>x</mi></math> and <math><mi>y</mi></math> directions. If
-            you recall in the previous chapters, we used this system to place the rectangle in the scene
-            but also to move it around.
+            components, <span class="copyable-formula">x</span><math><mi>x</mi></math> and <span class="copyable-formula">y</span>
+            <math><mi>y</mi></math>, and these components represent how far along is a vector displaced in the
+            <span class="copyable-formula">x</span><math><mi>x</mi></math> and <span class="copyable-formula">y</span>
+            <math><mi>y</mi></math> directions. If you recall in the previous chapters, we used this system to place
+            the rectangle in the scene but also to move it around.
         </p>
         <figure>
             <img src="vector.svg" class="half-width" />
             <figcaption class="image-caption">A representation of three vectors and their components. The first number
-                in each vector is the <math><mi>x</mi></math> coordinate, the second is the <math><mi>y</mi></math>
-                coordinate. Note that in computer graphics the <math><mi>y</mi></math> coordinate points downward.
+                in each vector is the <span class="copyable-formula">x</span><math><mi>x</mi></math> coordinate, the
+                second is the <span class="copyable-formula">y</span><math><mi>y</mi></math> coordinate. Note that in
+                computer graphics the <span class="copyable-formula">y</span><math><mi>y</mi></math> coordinate points downward.
             </figcaption>
         </figure>
         <p>
             Vectors have many useful properties that make them essential in game programming. Vectors can be added,
             and this is done by adding the respective components of each vector. For example, the sum of the vectors
-            <math>
+            <span class="copyable-formula">(2, 3)</span><math>
                 <mfenced>
                     <mrow>
                         <mn>2</mn>
@@ -40,7 +42,7 @@
                         <mn>3</mn>
                     </mrow>
                 </mfenced>
-            </math> and <math>
+            </math> and <span class="copyable-formula">(2, -1)</span><math>
                 <mfenced>
                     <mrow>
                         <mn>2</mn>
@@ -48,7 +50,7 @@
                         <mn>-1</mn>
                     </mrow>
                 </mfenced>
-            </math> is <math>
+            </math> is <span class="copyable-formula">(2 + 2, 3 + (-1))</span><math>
                 <mfenced>
                     <mrow>
                         <mn>2</mn>
@@ -60,7 +62,7 @@
                         <mfenced><mn>-1</mn></mfenced>
                     </mrow>
                 </mfenced>
-            </math> or <math>
+            </math> or <span class="copyable-formula">(4, 2)</span><math>
                 <mfenced>
                     <mrow>
                         <mn>4</mn>
@@ -73,16 +75,18 @@
         </p>
         <figure>
             <img src="vectorsum.svg" class="half-width" />
-            <figcaption class="image-caption">The sum of two vectors. The resulting vector's <math><mi>x</mi></math>
-                component is the sum of the <math><mi>x</mi></math> components of the initial vectors, similarly the
-                <math><mi>y</mi></math> component is the sum of the <math><mi>y</mi></math> components of the initial
-                vectors.
+            <figcaption class="image-caption">The sum of two vectors. The resulting vector's
+                <span class="copyable-formula">x</span><math><mi>x</mi></math> component is the sum of the
+                <span class="copyable-formula">x</span><math><mi>x</mi></math> components of the initial
+                vectors, similarly the <span class="copyable-formula">y</span><math><mi>y</mi></math>
+                component is the sum of the <span class="copyable-formula">y</span><math><mi>y</mi></math>
+                components of the initial vectors.
             </figcaption>
         </figure>
         <p>
             Similarly, vectors can be subtracted. When subtracting two vectors, the result is equal to the first
             vector's components minus the second vector's components. For example, when we subtract the vector
-            <math>
+            <span class="copyable-formula">(1, 3)</span><math>
                 <mfenced>
                     <mrow>
                         <mn>1</mn>
@@ -90,7 +94,7 @@
                         <mn>3</mn>
                     </mrow>
                 </mfenced>
-            </math> from the vector <math>
+            </math> from the vector <span class="copyable-formula">(4, 5)</span><math>
                 <mfenced>
                     <mrow>
                         <mn>4</mn>
@@ -98,7 +102,7 @@
                         <mn>5</mn>
                     </mrow>
                 </mfenced>
-            </math>, the result is <math>
+            </math>, the result is <span class="copyable-formula">(4 - 1, 5 - 3)</span><math>
                 <mfenced>
                     <mrow>
                         <mn>4</mn>
@@ -110,7 +114,7 @@
                         <mn>3</mn>
                     </mrow>
                 </mfenced>
-            </math> or <math>
+            </math> or <span class="copyable-formula">(3, 2)</span><math>
                 <mfenced>
                     <mrow>
                         <mn>3</mn>
@@ -122,8 +126,9 @@
         </p>
         <p>
             Vectors can also be scaled, which means we can multiply a vector with a number. When scaling a vector,
-            both the <math><mi>x</mi></math> and <math><mi>y</mi></math> components are multiplied by the number,
-            for example the vector <math>
+            both the <span class="copyable-formula">x</span><math><mi>x</mi></math> and
+            <span class="copyable-formula">y</span><math><mi>y</mi></math> components are multiplied by the number,
+            for example the vector <span class="copyable-formula">(2, 1)</span><math>
                 <mfenced>
                     <mrow>
                         <mn>2</mn>
@@ -132,11 +137,11 @@
                     </mrow>
                 </mfenced>
             </math> scaled with
-            the value <math>
+            the value <span class="copyable-formula">3</span><math>
                 <mrow>
                     <mn>3</mn>
                 </mrow>
-            </math> will result in the vector <math>
+            </math> will result in the vector <span class="copyable-formula">(3 * 2, 3 * 1)</span><math>
                 <mfenced>
                     <mrow>
                         <mn>3</mn>
@@ -148,7 +153,7 @@
                         <mn>1</mn>
                     </mrow>
                 </mfenced>
-            </math> or <math>
+            </math> or <span class="copyable-formula">(6, 3)</span><math>
                 <mfenced>
                     <mrow>
                         <mn>6</mn>
@@ -156,10 +161,10 @@
                         <mn>3</mn>
                     </mrow>
                 </mfenced>
-            </math>. Vectors can be scaled with both positive and
-            negative numbers, scaling a vector with a positive number does not change it's direction, while scaling
-            a vector with a negative number will make it point in the opposite direction of the original vector. For
-            example, scaling the vector <math>
+            </math>. Vectors can be scaled with both positive and negative numbers, scaling a
+            vector with a positive number does not change it's direction, while scaling a vector
+            with a negative number will make it point in the opposite direction of the original
+            vector. For example, scaling the vector <span class="copyable-formula">(2, 1)</span><math>
                 <mfenced>
                     <mrow>
                         <mn>2</mn>
@@ -167,11 +172,11 @@
                         <mn>1</mn>
                     </mrow>
                 </mfenced>
-            </math> with the value <math>
+            </math> with the value <span class="copyable-formula">-1</span><math>
                     <mrow>
                         <mn>-1</mn>
                     </mrow>
-            </math> will result in the vector <math>
+            </math> will result in the vector <span class="copyable-formula">(-2, -1)</span><math>
                 <mfenced>
                     <mrow>
                         <mn>-2</mn>
@@ -190,7 +195,8 @@
         </figure>
         <p>
             The magnitude of a vector represents its length. This can be calculated by forming a triangle from the
-            coordinates of the vector and using the Pythagorean theorem. Given the vector <math>
+            coordinates of the vector and using the Pythagorean theorem. Given the vector
+            <span class="copyable-formula">(x, y)</span><math>
                 <mfenced>
                 <mrow>
                     <mi>x</mi>
@@ -199,7 +205,7 @@
                 </mrow>
                 </mfenced>
             </math>,
-            the magnitude is equal to <math>
+            the magnitude is equal to <span class="copyable-formula">sqrt(x*x + y*y)</span><math>
                 <msqrt>
                   <mfenced>
                     <mrow>
@@ -215,7 +221,7 @@
                     </mrow>
                   </mfenced>
                 </msqrt>
-            </math>. For example, the magnitude of the vector <math>
+            </math>. For example, the magnitude of the vector <span class="copyable-formula">(3, 4)</span><math>
                 <mfenced>
                 <mrow>
                     <mn>3</mn>
@@ -224,7 +230,7 @@
                 </mrow>
                 </mfenced>
             </math>
-            is equal to <math>
+            is equal to <span class="copyable-formula">sqrt(3*3 + 4*4)</span><math>
                 <msqrt>
                   <mfenced>
                     <mrow>
@@ -240,14 +246,15 @@
                     </mrow>
                   </mfenced>
                 </msqrt>
-            </math> or <strong class="code-inline"><math>
+            </math> or <span class="copyable-formula">sqrt(9 + 16)</span><math>
                 <msqrt>
                     <mn>9</mn>
                     <mo>+</mo>
                     <mn>16</mn>
                 </msqrt>
-              </math></strong>
-            or <math><msqrt><mn>25</mn></msqrt></math> which equals <math><mn>5</mn></math>.
+              </math>
+            or <span class="copyable-formula">sqrt(25)</span><math><msqrt><mn>25</mn></msqrt></math>
+            which equals <span class="copyable-formula">5</span><math><mn>5</mn></math>.
         </p>
         <figure>
             <img src="vectormagnitude.svg" class="half-width" />
@@ -255,18 +262,30 @@
             </figcaption>
         </figure>
         <p>
-            Vectors which have a length of <math><mn>1</mn></math> are called unit vectors, and turning an ordinary
-            vector into a unit vector is called normalization. To normalize a vector, we divide the vector by its
-            own magnitude. For example, the vector <math><mfenced><mrow><mn>4</mn><mo>,</mo><mn>3</mn></mrow></mfenced></math>
-            has a magnitude of <math><mn>5</mn></math>, and after normalization this vector has the value
-            <math><mfenced><mrow><mfrac><mn>4</mn><mn>5</mn></mfrac><mo>,</mo><mn><mfrac><mn>3</mn><mn>5</mn></mfrac></mn></mrow></mfenced></math>
-            or <math><mfenced><mrow><mn>0.8</mn><mo>,</mo><mn>0.6</mn></mrow></mfenced></math>.
+            Vectors which have a length of <span class="copyable-formula">1</span><math><mn>1</mn></math> are called
+            unit vectors, and turning an ordinary vector into a unit vector is called normalization. To normalize a
+            vector, we divide the vector by its own magnitude. For example, the vector
+            <span class="copyable-formula">(4, 3)</span><math>
+                <mfenced><mrow><mn>4</mn><mo>,</mo><mn>3</mn></mrow></mfenced>
+            </math>
+            has a magnitude of <span class="copyable-formula">5</span><math><mn>5</mn></math>, and after normalization
+            this vector has the value <span class="copyable-formula">(4/5, 3/5)</span><math>
+                <mfenced>
+                    <mrow>
+                        <mfrac><mn>4</mn><mn>5</mn></mfrac><mo>,</mo><mn><mfrac><mn>3</mn><mn>5</mn>
+                        </mfrac>
+                    </mrow>
+                </mfenced>
+            </math> or <span class="copyable-formula">(0.8, 0.6)</span><math>
+                <mfenced><mrow><mn>0.8</mn><mo>,</mo><mn>0.6</mn></mrow></mfenced>
+            </math>.
         </p>
         <p>
             Finally, one of the most important operations we can do with vectors is called the dot product. The dot
             product is used in many cases, such as when projecting one vector on another, or when we want to calculate
             the angle between two vectors. The dot product of two vectors is calculated by multiplying their respective
-            components and summing the products. For example, the dot product of the vectors <math>
+            components and summing the products. For example, the dot product of the vectors
+            <span class="copyable-formula">v1 = (x1, y1)</span><math>
                 <msub>
                     <mi>v</mi>
                     <mn>1</mn>
@@ -285,7 +304,7 @@
                         </msub>
                     </mrow>
                 </mfenced>
-            </math> and <math>
+            </math> and <span class="copyable-formula">v2 = (x2, y2)</span><math>
                 <msub>
                     <mi>v</mi>
                     <mn>2</mn>
@@ -305,7 +324,7 @@
                     </mrow>
                 </mfenced>
             </math> is 
-            <math>
+            <span class="copyable-formula">x1 * x2 + y1 * y2</span><math>
                 <mrow>
                     <msub>
                         <mi>x</mi>
@@ -330,7 +349,7 @@
             </math>. If we divide this value by the magnitudes of both vectors, we will get
             the cosine of the angle between the vectors.
         </p>
-        <math display="block">
+        <span class="copyable-formula">cos(theta) = (v1 dot v2)/(mag(v1) * mag(v2))</span><math display="block">
             <mrow>
                 <mi>cos</mi>
                 <mo>&ApplyFunction;</mo>
