@@ -25,22 +25,6 @@ canvas {
     max-width: 100%;
 }
 
-@media only screen and (max-width: 576px) {
-
-	article {
-		width: 100%;
-	}
-
-    figure {
-        width: 100%;
-    }
-    
-    figcaption {
-        margin-left: 0;
-        width: 100%;
-    }
-}
-
 p {
     text-align: justify;
     margin-bottom: 0;
@@ -97,4 +81,24 @@ figure {
     line-height: 16px;
     margin-left: 8px;
     font-family: 'Source Code Pro','Ubuntu Mono',monospace;
+}
+
+@media only screen and (max-width: 576px) {
+
+	article {
+		width: 100%;
+	}
+
+    figure {
+        width: 100%;
+    }
+
+    figure img {
+        width: 100%;
+    }
+    
+    figcaption {
+        margin-left: 0;
+        width: 100%;
+    }
 }
