@@ -1,40 +1,426 @@
 <!doctype html>
 <html>
 <head>
-    <title>Chapter 5- The timestep</title>
+    <title>Chapter 5 - Vectors</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel='stylesheet' href="../prism.css">
     <link rel='stylesheet' href="../style.css">
 </head>
 <body class="line-numbers">
     <article>
-        <h1>Chapter 5 - The timestep</h1>
+        <h1>Chapter 5 - Vectors</h1>
         <p>
-            The timestep (or delta time) is the time it takes for one frame of the game loop to finish. If our game loop
-            runs at 60 frames per second, then the timestep of our game will be 1/60th of a second,
-            which is roughly 16.6666 milliseconds.
+            In game development, many physical and graphical objects require us to manipulate objects which
+            have either a position or a direction in the game world. These objects are often best described
+            by using a mathematical object called a vector.
         </p>
         <p>
-            The existence of the timestep has two very important consequences. The first is that when making
-            our game, every frame has a time "budget" of 16.6666 milliseconds, meaning that every calculation,
-            every rendering on the screen, every piece of code that runs in a frame needs to complete within
-            that 16.6666 milliseconds window. If this deadline is missed, the game may slow down, feel choppy,
-            or display irregular behavior.
+            A vector is a mathematical (or geometric) object that has a magnitude and direction. There are many
+            ways to represent a vector, but the most common one is the Cartesian vector. In 2D, this vector has two
+            components, <math><mi>x</mi></math> and <math><mi>y</mi></math>, and these components represent how far
+            along is a vector displaced in the <math><mi>x</mi></math> and <math><mi>y</mi></math> directions. If
+            you recall in the previous chapters, we used this system to place the rectangle in the scene
+            but also to move it around.
+        </p>
+        <figure>
+            <img src="vector.svg" class="half-width" />
+            <figcaption class="image-caption">A representation of three vectors and their components. The first number
+                in each vector is the <math><mi>x</mi></math> coordinate, the second is the <math><mi>y</mi></math>
+                coordinate. Note that in computer graphics the <math><mi>y</mi></math> coordinate points downward.
+            </figcaption>
+        </figure>
+        <p>
+            Vectors have many useful properties that make them essential in game programming. Vectors can be added,
+            and this is done by adding the respective components of each vector. For example, the sum of the vectors
+            <math>
+                <mfenced>
+                    <mrow>
+                        <mn>2</mn>
+                        <mo>,</mo>
+                        <mn>3</mn>
+                    </mrow>
+                </mfenced>
+            </math> and <math>
+                <mfenced>
+                    <mrow>
+                        <mn>2</mn>
+                        <mo>,</mo>
+                        <mn>-1</mn>
+                    </mrow>
+                </mfenced>
+            </math> is <math>
+                <mfenced>
+                    <mrow>
+                        <mn>2</mn>
+                        <mo>+</mo>
+                        <mn>2</mn>
+                        <mo>,</mo>
+                        <mn>3</mn>
+                        <mo>+</mo>
+                        <mfenced><mn>-1</mn></mfenced>
+                    </mrow>
+                </mfenced>
+            </math> or <math>
+                <mfenced>
+                    <mrow>
+                        <mn>4</mn>
+                        <mo>,</mo>
+                        <mn>2</mn>
+                    </mrow>
+                </mfenced>
+            </math>. Graphically, this is represented by the second vector pointing
+            away from the tip of the first vector.
+        </p>
+        <figure>
+            <img src="vectorsum.svg" class="half-width" />
+            <figcaption class="image-caption">The sum of two vectors. The resulting vector's <math><mi>x</mi></math>
+                component is the sum of the <math><mi>x</mi></math> components of the initial vectors, similarly the
+                <math><mi>y</mi></math> component is the sum of the <math><mi>y</mi></math> components of the initial
+                vectors.
+            </figcaption>
+        </figure>
+        <p>
+            Similarly, vectors can be subtracted. When subtracting two vectors, the result is equal to the first
+            vector's components minus the second vector's components. For example, when we subtract the vector
+            <math>
+                <mfenced>
+                    <mrow>
+                        <mn>1</mn>
+                        <mo>,</mo>
+                        <mn>3</mn>
+                    </mrow>
+                </mfenced>
+            </math> from the vector <math>
+                <mfenced>
+                    <mrow>
+                        <mn>4</mn>
+                        <mo>,</mo>
+                        <mn>5</mn>
+                    </mrow>
+                </mfenced>
+            </math>, the result is <math>
+                <mfenced>
+                    <mrow>
+                        <mn>4</mn>
+                        <mo>-</mo>
+                        <mn>1</mn>
+                        <mo>,</mo>
+                        <mn>5</mn>
+                        <mo>-</mo>
+                        <mn>3</mn>
+                    </mrow>
+                </mfenced>
+            </math> or <math>
+                <mfenced>
+                    <mrow>
+                        <mn>3</mn>
+                        <mo>,</mo>
+                        <mn>2</mn>
+                    </mrow>
+                </mfenced>
+            </math>.
         </p>
         <p>
-            The other consequence is that we have to take into account the timestep for every calculation of motion
-            in our game. For example, if we have an object that moves at 125 units per second, then this object
-            should move at around 2.083333 units per frame. This result is achieved by taking our timestep, which is
-            16.6666 milliseconds and converting it into seconds by dividing it by 1000. The result is 0.0166666 seconds
-            per frame. Next, we multiply the 125 units per second with the 0.0166666 seconds per frame to get the final
-            result of 2.083333 units per frame.
+            Vectors can also be scaled, which means we can multiply a vector with a number. When scaling a vector,
+            both the <math><mi>x</mi></math> and <math><mi>y</mi></math> components are multiplied by the number,
+            for example the vector <math>
+                <mfenced>
+                    <mrow>
+                        <mn>2</mn>
+                        <mo>,</mo>
+                        <mn>1</mn>
+                    </mrow>
+                </mfenced>
+            </math> scaled with
+            the value <math>
+                <mrow>
+                    <mn>3</mn>
+                </mrow>
+            </math> will result in the vector <math>
+                <mfenced>
+                    <mrow>
+                        <mn>3</mn>
+                        <mo>*</mo>
+                        <mn>2</mn>
+                        <mo>,</mo>
+                        <mn>3</mn>
+                        <mo>*</mo>
+                        <mn>1</mn>
+                    </mrow>
+                </mfenced>
+            </math> or <math>
+                <mfenced>
+                    <mrow>
+                        <mn>6</mn>
+                        <mo>,</mo>
+                        <mn>3</mn>
+                    </mrow>
+                </mfenced>
+            </math>. Vectors can be scaled with both positive and
+            negative numbers, scaling a vector with a positive number does not change it's direction, while scaling
+            a vector with a negative number will make it point in the opposite direction of the original vector. For
+            example, scaling the vector <math>
+                <mfenced>
+                    <mrow>
+                        <mn>2</mn>
+                        <mo>,</mo>
+                        <mn>1</mn>
+                    </mrow>
+                </mfenced>
+            </math> with the value <math>
+                    <mrow>
+                        <mn>-1</mn>
+                    </mrow>
+            </math> will result in the vector <math>
+                <mfenced>
+                    <mrow>
+                        <mn>-2</mn>
+                        <mo>,</mo>
+                        <mn>-1</mn>
+                    </mrow>
+                </mfenced>
+            </math>.
         </p>
-        <div id="pixi-root"></div>
-        
-        <p><a href="../c4/">Chapter 6 - Who knows what</a></p>
+        <figure>
+            <img src="vectorscale.svg" class="half-width" />
+            <figcaption class="image-caption">When a vector is scaled with a positive number it will still point
+                in the same direction as the original vector. When a vector is scaled with a negative number, it
+                will point in the direction opposite the original vector.
+            </figcaption>
+        </figure>
+        <p>
+            The magnitude of a vector represents its length. This can be calculated by forming a triangle from the
+            coordinates of the vector and using the Pythagorean theorem. Given the vector <math>
+                <mfenced>
+                <mrow>
+                    <mi>x</mi>
+                    <mo>,</mo>
+                    <mi>y</mi>
+                </mrow>
+                </mfenced>
+            </math>,
+            the magnitude is equal to <math>
+                <msqrt>
+                  <mfenced>
+                    <mrow>
+                        <msup>
+                            <mi>x</mi>
+                            <mn>2</mn>
+                        </msup>
+                      <mo>+</mo>
+                      <msup>
+                        <mi>y</mi>
+                        <mn>2</mn>
+                    </msup>
+                    </mrow>
+                  </mfenced>
+                </msqrt>
+            </math>. For example, the magnitude of the vector <math>
+                <mfenced>
+                <mrow>
+                    <mn>3</mn>
+                    <mo>,</mo>
+                    <mn>4</mn>
+                </mrow>
+                </mfenced>
+            </math>
+            is equal to <math>
+                <msqrt>
+                  <mfenced>
+                    <mrow>
+                        <msup>
+                            <mn>3</mn>
+                            <mn>2</mn>
+                        </msup>
+                      <mo>+</mo>
+                      <msup>
+                        <mn>4</mn>
+                        <mn>2</mn>
+                    </msup>
+                    </mrow>
+                  </mfenced>
+                </msqrt>
+            </math> or <strong class="code-inline"><math>
+                <msqrt>
+                    <mn>9</mn>
+                    <mo>+</mo>
+                    <mn>16</mn>
+                </msqrt>
+              </math></strong>
+            or <math><msqrt><mn>25</mn></msqrt></math> which equals <math><mn>5</mn></math>.
+        </p>
+        <figure>
+            <img src="vectormagnitude.svg" class="half-width" />
+            <figcaption class="image-caption">The mangitude of a vector can be calculated using the Pythagorean theorem.
+            </figcaption>
+        </figure>
+        <p>
+            Vectors which have a length of <math><mn>1</mn></math> are called unit vectors, and turning an ordinary
+            vector into a unit vector is called normalization. To normalize a vector, we divide the vector by its
+            own magnitude. For example, the vector <math><mfenced><mrow><mn>4</mn><mo>,</mo><mn>3</mn></mrow></mfenced></math>
+            has a magnitude of <math><mn>5</mn></math>, and after normalization this vector has the value
+            <math><mfenced><mrow><mfrac><mn>4</mn><mn>5</mn></mfrac><mo>,</mo><mn><mfrac><mn>3</mn><mn>5</mn></mfrac></mn></mrow></mfenced></math>
+            or <math><mfenced><mrow><mn>0.8</mn><mo>,</mo><mn>0.6</mn></mrow></mfenced></math>.
+        </p>
+        <p>
+            Finally, one of the most important operations we can do with vectors is called the dot product. The dot
+            product is used in many cases, such as when projecting one vector on another, or when we want to calculate
+            the angle between two vectors. The dot product of two vectors is calculated by multiplying their respective
+            components and summing the products. For example, the dot product of the vectors <math>
+                <msub>
+                    <mi>v</mi>
+                    <mn>1</mn>
+                </msub>
+                <mo>=</mo>
+                <mfenced>
+                    <mrow>
+                        <msub>
+                            <mi>x</mi>
+                            <mn>1</mn>
+                        </msub>
+                        <mo>,</mo>
+                        <msub>
+                            <mi>y</mi>
+                            <mn>1</mn>
+                        </msub>
+                    </mrow>
+                </mfenced>
+            </math> and <math>
+                <msub>
+                    <mi>v</mi>
+                    <mn>2</mn>
+                </msub>
+                <mo>=</mo>
+                <mfenced>
+                    <mrow>
+                        <msub>
+                            <mi>x</mi>
+                            <mn>2</mn>
+                        </msub>
+                        <mo>,</mo>
+                        <msub>
+                            <mi>y</mi>
+                            <mn>2</mn>
+                        </msub>
+                    </mrow>
+                </mfenced>
+            </math> is 
+            <math>
+                <mrow>
+                    <msub>
+                        <mi>x</mi>
+                        <mn>1</mn>
+                    </msub>
+                    <mo>&InvisibleTimes;</mo>
+                    <msub>
+                        <mi>x</mi>
+                        <mn>2</mn>
+                    </msub>
+                    <mo>+</mo>
+                    <msub>
+                        <mi>y</mi>
+                        <mn>1</mn>
+                    </msub>
+                    <mo>&InvisibleTimes;</mo>
+                    <msub>
+                        <mi>y</mi>
+                        <mn>2</mn>
+                    </msub>
+                </mrow>
+            </math>. If we divide this value by the magnitudes of both vectors, we will get
+            the cosine of the angle between the vectors.
+        </p>
+        <math display="block">
+            <mrow>
+                <mi>cos</mi>
+                <mo>&ApplyFunction;</mo>
+                <mi>&theta;</mi>
+                <mo>=</mo>
+                <mfrac>
+                    <mrow>
+                        <msub>
+                            <mi>v</mi>
+                            <mn>1</mn>
+                        </msub>
+                        <mo>&sdot;</mo>
+                        <msub>
+                            <mi>v</mi>
+                            <mn>2</mn>
+                        </msub>
+                    </mrow>
+                    <mrow>
+                        <mo>|</mo>
+                        <msub>
+                            <mi>v</mi>
+                            <mn>1</mn>
+                        </msub>
+                        <mo>|</mo>
+                        <mo>&InvisibleTimes;</mo>
+                        <mo>|</mo>
+                        <msub>
+                            <mi>v</mi>
+                            <mn>2</mn>
+                        </msub>
+                        <mo>|</mo>
+                    </mrow>
+                </mfrac>
+            </mrow>
+        </math>
+        <p>
+            Now that we've shown what vectors can do, let's write a class called <strong class="code-inline">vec2</strong>
+            which will allow us to create and manipulate vectors. Create a file called <strong class="code-inline">vec2.js</strong>
+            and place it on the <strong class="code-inline">src</strong> directory, then add the following code to it:
+        </p>
+        <pre><code class="language-js">export default class Vec2 {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        Object.freeze(this);
+    }
+
+    add(otherVec) {
+        return new Vec2(this.x + otherVec.x, this.y + otherVec.y);
+    }
+
+    subtract(otherVec) {
+        return new Vec2(this.x - otherVec.x, this.y - otherVec.y);
+    }
+
+    scale(scalar) {
+        return new Vec2(scalar * this.x, scalar * this.y);
+    }
+
+    magnitude() {
+        return Math.sqrt((this.x*this.x)+(this.y*this.y));
+    }
+
+    normalize() {
+        let magnitude = this.magnitude();
+        return new Vec2(this.x / magnitude, this.y / magnitude);
+    }
+
+    dot(otherVector) {
+        return this.x * otherVector.x + this.y * otherVector.y;
+    }
+
+}</code></pre>
+        <p>
+            Note the <strong class="code-inline">Object.freeze(this)</strong> statement in line 5.
+            By calling that statement we make our <strong class="code-inline">Vec2</strong> class immutable,
+            making it impossible to change the values of an instance after its been instantiated.
+            Immutability is highly desirable since we can guarantee that no module of our game will
+            accidentaly overwrite a vector used by another module. If we need to operate on our
+            <strong class="code-inline">Vec2</strong> instance, we'll have to create a new copy.
+        </p>
+        <p>
+            In the following chapters we'll make extensive use of this class when describing the position
+            and motion of all game objects.
+        </p>
+        <p><a href="../c6/">Chapter 6 - Physics and motion</a></p>
     </article>
     <script src="../prism.js"></script>
     <script src="../pixi.min.js"></script>
-    <script src="./bundle.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </body>
 </html>
