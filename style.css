@@ -31,11 +31,14 @@ canvas {
 		width: 100%;
 	}
 
-    .half-width {
+    figure {
         width: 100%;
-        border: 1px solid #e1e7e6;
     }
-
+    
+    figcaption {
+        margin-left: 0;
+        width: 100%;
+    }
 }
 
 p {
@@ -68,16 +71,19 @@ figcaption {
     text-align: center;
     font-weight: normal;
     margin-top: 24px;
+    margin-left: -50%;
+    width: 200%;
+    justify-self: center;
 }
 
 figure {
     display: flex;
     flex-direction: column;
-}
-
-.half-width {
     width: 50%;
     align-self: center;
+}
+
+.image-border {
     border: 1px solid #e1e7e6;
 }
 
