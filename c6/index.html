@@ -19,11 +19,44 @@
             in the game world. Physics systems can be as simple as only including velocity and acceleration,
             all the way to realistic simulations that take into account wind, friction, deformation, rotation,
             and many other phenomena. For the moment we'll be focusing on the most basic systems that only use
-            velocity and acceleration.
+            velocity, acceleration, and maintain their shape at all times. These physics objects are called
+            rigid bodies.
         </p>
-        <p><a href="../c6/">Chapter 7 - Input and game controls</a></p>
+        <p>
+            All rigid bodies that are in the game world have a position, which is represented by a vector.
+            Shapes such a rectangles have many points, we need to choose one "main" point, sometimes called
+            the anchor point, all other points on the rigid body will be in reference to this anchor point.
+            When we ask where an object is, we are actually asking where its anchor point is, and then we'll
+            also know where every other point is located.
+        </p>
+        <p>
+            If we want to move a rigid body, we need to change its position. Velocity is defined as the rate
+            of change of a body's position, and it is measured by a unit of distance over a unit of
+            time, such as meters per second, miles per hour, units per frame, etc. In our game we'll use the
+            measure of units per second. We can replace this generalized "units" with meters, pixels, or centimeters
+            in the future.
+        </p>
+        <p>
+            Just like the position, the velocity of a body is also represented by a vector. A velocity of
+            <span class="copyable-formula">(20, 50)</span><math>
+                <mfenced>
+                    <mrow>
+                        <mn>20</mn>
+                        <mo>,</mo>
+                        <mn>50</mn>
+                    </mrow>
+                </mfenced>
+            </math>
+            means the rigid body is moving by 20 units a second in the
+            <span class="copyable-formula">x</span><math><mi>x</mi></math>
+            direction and 50 units a second in the <span class="copyable-formula">y</span><math><mi>y</mi></math>
+            direction.
+        </p>
+        <p><a href="../c7/">Chapter 7 - Input and game controls</a></p>
     </article>
     <script src="../prism.js"></script>
     <script src="../pixi.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </body>
 </html>
