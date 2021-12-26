@@ -33,8 +33,8 @@
             <figcaption class="image-caption">Two rectangles, a circle, and their anchor points (in red).
                 In rectangles it's very common to choose the top-left point as the anchor, and the other
                 points and boundaries are then calculated by adding the width and height to the anchor point.
-                Another less common scheme uses the center point of a rectangle as the anchor. When working
-                with circles, the center point will almost always be chosen as the anchor, and together with the
+                Another less common scheme uses the center point of a rectangle as the anchor. In circles,
+                the center point will almost always be chosen as the anchor, and together with the
                 value of the radius we can calculate the position of the perimeter of the circle.
             </figcaption>
         </figure>
@@ -94,15 +94,15 @@
 import * as MainLoop from 'mainloop.js';
 import Vec2 from './vec2';
 
-let gravity = new Vec2(0,500);
-let velocity = new Vec2(150,0);
-let position = new Vec2(100,0);
+let gravity = new Vec2(0, 500);
+let velocity = new Vec2(200, 0);
+let position = new Vec2(150, 50);
 
 const gameWidth = 640;
 const gameHeight = 360;
 
-const rectWidth = 200;
-const rectHeight = 100;
+const radius = 50;
+
 let rectColor = randomColor();
 const app = new PIXI.Application({ width: gameWidth, height: gameHeight });
 document.getElementById("pixi-root").appendChild(app.view);
@@ -113,42 +113,39 @@ MainLoop.setUpdate((delta) =&gt; {
     const deltaInSecs = delta / 1000;
     velocity = velocity.add(gravity.scale(deltaInSecs));
     position = position.add(velocity.scale(deltaInSecs));
-
-    if(position.x + rectWidth &gt;= gameWidth) {
+    if(position.x + radius &gt;= gameWidth) {
         /*
             If the right side of the body moves past the right side of the game area,
             move it back and reverse its horizontal direction of movement
         */
-        let diff = position.x + rectWidth - gameWidth;
-        position = new Vec2(position.x - diff, position.y);
+        let diff = position.x + radius - gameWidth;
+        position = new Vec2(position.x - 2 * diff, position.y);
         velocity = new Vec2(-velocity.x, velocity.y);
         rectColor = randomColor();
     }
-
-    if(position.x &lt;= 0) {
+    if(position.x - radius &lt;= 0) {
         /* 
             If the left side of the body moves past the left side of the game area,
             move it back and reverse its horizontal direction of movement
         */
-        let diff = position.x;
-        position = new Vec2(position.x + diff, position.y);
+        let diff = position.x - radius;
+        position = new Vec2(position.x - 2 * diff, position.y);
         velocity = new Vec2(-velocity.x, velocity.y);
         rectColor = randomColor();
     }
-
-    if(position.y + rectHeight &gt; gameHeight) {
+    if(position.y + radius &gt; gameHeight) {
         /*
             If the bottom side of the body moves below the bottom of the game area,
             move it back and change its vertical direction of movement
         */
-        let diff = position.y + rectHeight - gameHeight;
+        let diff = position.y + radius - gameHeight;
         position = new Vec2(position.x, position.y - 2 * diff);
         velocity = new Vec2(velocity.x, -velocity.y);
         rectColor = randomColor();
     }
     obj.clear();
     obj.beginFill(rectColor);
-    obj.drawRect(position.x, position.y, rectWidth, rectHeight);
+    obj.drawCircle(position.x, position.y, radius);
 });
 
 MainLoop.start();
