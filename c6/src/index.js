@@ -1,11 +1,10 @@
-import * as PIXI from 'pixi.js'
+const PIXI = window.PIXI;
 import * as MainLoop from 'mainloop.js';
+import Vec2 from './vec2';
 
-let xVelocity = 2;
-let yVelocity = 0;
-
-let xPosition = 60;
-let yPosition = 0;
+let gravity = new Vec2(0,500);
+let velocity = new Vec2(150,0);
+let position = new Vec2(100,0);
 
 const gameWidth = 640;
 const gameHeight = 360;
@@ -13,38 +12,36 @@ const gameHeight = 360;
 const rectWidth = 200;
 const rectHeight = 100;
 let rectColor = randomColor();
-
 const app = new PIXI.Application({ width: gameWidth, height: gameHeight });
 document.getElementById("pixi-root").appendChild(app.view);
-
 const obj = new PIXI.Graphics();
-const gravity = 0.2;
 app.stage.addChild(obj);
-MainLoop.setUpdate(() => {
+
+MainLoop.setUpdate((delta) => {
+    const deltaInSecs = delta / 1000;
+    velocity = velocity.add(gravity.scale(deltaInSecs));
+    position = position.add(velocity.scale(deltaInSecs));
+    if(position.x + rectWidth >= gameWidth) {
+        let diff = position.x + rectWidth - gameWidth;
+        position = new Vec2(position.x - diff, position.y);
+        velocity = new Vec2(-velocity.x, velocity.y);
+        rectColor = randomColor();
+    }
+    if(position.x <= 0) {
+        let diff = position.x;
+        position = new Vec2(position.x + diff, position.y);
+        velocity = new Vec2(-velocity.x, velocity.y);
+        rectColor = randomColor();
+    }
+    if(position.y + rectHeight > gameHeight) {
+        let diff = position.y + rectHeight - gameHeight;
+        position = new Vec2(position.x, gameHeight - rectHeight - diff);
+        velocity = new Vec2(velocity.x, -velocity.y);
+        rectColor = randomColor();
+    }
     obj.clear();
     obj.beginFill(rectColor);
-    obj.drawRect(xPosition, yPosition, rectWidth, rectHeight);
-    yVelocity+=gravity;
-    xPosition += xVelocity;
-    yPosition += yVelocity;
-    if(xPosition + rectWidth >= gameWidth) {
-        let diff = xPosition + rectWidth - gameWidth;
-        xPosition -= diff;
-        xVelocity = -xVelocity;
-        rectColor = randomColor();
-    }
-    if(xPosition <= 0) {
-        let diff = xPosition;
-        xPosition+=diff;
-        xVelocity = -xVelocity;
-        rectColor = randomColor();
-    }
-    if(yPosition + rectHeight > gameHeight) {
-        let diff = yPosition + rectHeight - gameHeight;
-        yPosition = gameHeight - rectHeight - diff;
-        yVelocity = -yVelocity;
-        rectColor = randomColor();
-    }
+    obj.drawRect(position.x, position.y, rectWidth, rectHeight);
 });
 
 MainLoop.start();

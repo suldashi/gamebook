@@ -11,33 +11,28 @@
         <h1>Chapter 6 - Physics and motion</h1>
         <p>
             Earlier we created a rectangle that bounces around the game scene. In this article
-            we'll explore moving objects in depth and how we can get them to consistently follow the rules
+            we'll explore moving objects in more depth and how we can get them to consistently follow the rules
             of physics.
         </p>
+        <div id="pixi-root"></div>
         <p>
-            In game development, physics refers to all systems and methods that are used to move objects
-            in the game world. Physics systems can be as simple as only including velocity and acceleration,
+            In game development, physics refers to all methods that are used to move objects
+            in the game world. Physics can be as simple as only including velocity and acceleration,
             all the way to realistic simulations that take into account wind, friction, deformation, rotation,
-            and many other phenomena. For the moment we'll be focusing on the most basic systems that only use
-            velocity, acceleration, and maintain their shape at all times. These physics objects are called
-            rigid bodies.
+            and many other phenomena. For the moment we'll be focusing on the most basic physical objects
+            that are affected only by velocity, acceleration, and maintain their shape at all times (no deformation).
+            These physics objects are also called rigid bodies, or just bodies for short.
         </p>
         <p>
-            All rigid bodies that are in the game world have a position, which is represented by a vector.
-            Shapes such a rectangles have many points, we need to choose one "main" point, sometimes called
-            the anchor point, all other points on the rigid body will be in reference to this anchor point.
-            When we ask where an object is, we are actually asking where its anchor point is, and then we'll
-            also know where every other point is located.
+            Bodies are represented by simple shapes such as rectangles and circles, and sometimes with simple polygons.
+            Bodies also usually have a "main" or "anchor" point that defines its position. All other points of a body
+            are in reference to the anchor point.
         </p>
+        <p>add graphic of points here</p>
         <p>
-            If we want to move a rigid body, we need to change its position. Velocity is defined as the rate
-            of change of a body's position, and it is measured by a unit of distance over a unit of
-            time, such as meters per second, miles per hour, units per frame, etc. In our game we'll use the
-            measure of units per second. We can replace this generalized "units" with meters, pixels, or centimeters
-            in the future.
-        </p>
-        <p>
-            Just like the position, the velocity of a body is also represented by a vector. A velocity of
+            If we want to move a rigid body, we need to change its position. The rate of change of a body's
+            position is called velocity. Just like the position, the velocity of a body is also represented
+            by a vector. A velocity of
             <span class="copyable-formula">(20, 50)</span><math>
                 <mfenced>
                     <mrow>
@@ -52,10 +47,125 @@
             direction and 50 units a second in the <span class="copyable-formula">y</span><math><mi>y</mi></math>
             direction.
         </p>
-        <p><a href="../c7/">Chapter 7 - Input and game controls</a></p>
+        <p>
+            "Units" here is a generalized measure of distance, since in an abstract game it does
+            not make sense to measure distances in real-life units, such as kilometers, meters, or miles. However,
+            some games in realistic settings do indeed use real-life units, such as first-person shooters, flight
+            simulators, city planning games, etc. Still other games use fictional units, for example in League
+            of Legends the unit of distance is the "Teemo", named after a popular in-game hero, and therefore you
+            can say things like "that enemy is 8 Teemos away".
+        </p>
+        <p>
+            Similarly to velocity, acceleration is the change of velocity over time. To apply acceleration to a body,
+            we first need to add the acceleration to the velocity, then add the newly-changed velocity to the position.
+            The most common form of acceleration that one might encounter is gravity, which is a constant acceleration in the
+            y axis only.
+        </p>
+        <p>
+            In mathetmatics, the practice of summing small bits of data to find a total is called integration. In our case,
+            we're integrating a body's position by continuously summing small slices of the body's velocity and acceleration.
+            In calculus, the slices are infinitely small and the integration is done using analytical methods, but
+            in our case where the game simulation advances in discrete steps, the integration is done numerically.
+            This means that every frame, a body is moved a small amount based on its velocity, and the velocity is
+            also updated by a small amount based on its acceleration. In the next frame the body's position is again
+            changed based on the new updated velocity, and the velocity is again updated based on the acceleration.
+            Over the course of many frames, the body will have moved exactly by how much we expect.
+        </p>
+        <p>
+            The order in which we apply the updates to the position, velocity, and acceleration matters a lot to
+            the accuracy of the final result. There are many ways to calculate the numerical integration, but one of the most
+            popular and simple methods is called the Semi-implicit Euler. With this method, we first update the
+            acceleration (if necessary), then apply the updated acceleration to the velocity, and finally apply the updated
+            velocity to the position.
+        </p>
+        <p>
+            Let's put these concepts together and explan how they work:
+        </p>
+        <pre><code class="language-js">import * as PIXI from 'pixi.js'
+import * as MainLoop from 'mainloop.js';
+import Vec2 from './vec2';
+
+let gravity = new Vec2(0,500);
+let velocity = new Vec2(150,0);
+let position = new Vec2(100,0);
+
+const gameWidth = 640;
+const gameHeight = 360;
+
+const rectWidth = 200;
+const rectHeight = 100;
+let rectColor = randomColor();
+const app = new PIXI.Application({ width: gameWidth, height: gameHeight });
+document.getElementById("pixi-root").appendChild(app.view);
+const obj = new PIXI.Graphics();
+app.stage.addChild(obj);
+
+MainLoop.setUpdate((delta) =&gt; {
+    const deltaInSecs = delta / 1000;
+    velocity = velocity.add(gravity.scale(deltaInSecs));
+    position = position.add(velocity.scale(deltaInSecs));
+    if(position.x + rectWidth &gt;= gameWidth) {
+        let diff = position.x + rectWidth - gameWidth;
+        position = new Vec2(position.x - diff, position.y);
+        velocity = new Vec2(-velocity.x, velocity.y);
+        rectColor = randomColor();
+    }
+    if(position.x &lt;= 0) {
+        let diff = position.x;
+        position = new Vec2(position.x + diff, position.y);
+        velocity = new Vec2(-velocity.x, velocity.y);
+        rectColor = randomColor();
+    }
+    if(position.y + rectHeight &gt; gameHeight) {
+        let diff = position.y + rectHeight - gameHeight;
+        position = new Vec2(position.x, gameHeight - rectHeight - diff);
+        velocity = new Vec2(velocity.x, -velocity.y);
+        rectColor = randomColor();
+    }
+    obj.clear();
+    obj.beginFill(rectColor);
+    obj.drawRect(position.x, position.y, rectWidth, rectHeight);
+});
+
+MainLoop.start();
+
+function randomColor() {
+    let red = Math.floor(Math.random()*256);
+    let green = Math.floor(Math.random()*256);
+    let blue = Math.floor(Math.random()*256);
+    return (red &lt;&lt; 16) + (green &lt;&lt; 8) + blue;
+}</code></pre>
+        <p>
+            Let's note some of the changes from last time. The position and velocity of the body are instances of the
+            Vec2 class. The position of the body is updated every frame with the velocity, but a very important observation
+            is the fact that we're scaling the velocity by a variable called delta. This variable represents the time between frames
+            (in milliseconds), and for a game that runs at 60 frames per second, its value is roughly equal to 16.666. This
+            delta is then again divided by 1000 to change its unit from milliseconds to seconds, giving it a value of 0.016666.
+            Scaling the velocity with the delta is necessary here since the game loop runs at 60 frames per second, and if
+            we want to move an object by 30,50 units every second, we actually need to move it by 30*0.016666, 50*0.016666, or
+            0.50, 0.83333 every frame.
+        </p>
+        <p>
+            The velocity (gravity in this case) remains constant throughout the game loop. We achieve the bouncing effect by
+            reversing the direction of the velocity when it touches the bottom of the screen. When the velocity is negative
+            and the body is moving upwards (recall that the y axis points downward), the gravity will constantly increase
+            the velocity until the body stops moving upward and starts falling again.
+        </p>
+        <p>
+            When the body touches the left, right, or bottom side of the screen, we have to move it so that it back inside
+            the game area. We do this by calculating how deep has the body gone outside the bounds of the game,
+            and pushing the object back by the same amount.
+        </p>
+        <p>
+            We're starting to reach the organizational limits of our code. In the next chapter, we'll explore and
+            implement the ECS pattern (Entity Component System), which will allow us to organize our game code in
+            a performant and extensible manner.
+        </p>
+        <p><a href="../c7/">Chapter 7 - The Entity Component System pattern</a></p>
     </article>
     <script src="../prism.js"></script>
     <script src="../pixi.min.js"></script>
+    <script src="./bundle.js"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </body>
