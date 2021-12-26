@@ -28,7 +28,16 @@
             Bodies also usually have a "main" or "anchor" point that defines its position. All other points of a body
             are in reference to the anchor point.
         </p>
-        <p>add graphic of points here</p>
+        <figure>
+            <img src="anchors.svg" class="image-border" />
+            <figcaption class="image-caption">Two rectangles, a circle, and their anchor points (in red).
+                In rectangles it's very common to choose the top-left point as the anchor, and the other
+                points and boundaries are then calculated by adding the width and height to the anchor point.
+                Another less common scheme uses the center point of a rectangle as the anchor. When working
+                with circles, the center point will almost always be chosen as the anchor, and together with the
+                value of the radius we can calculate the position of the perimeter of the circle.
+            </figcaption>
+        </figure>
         <p>
             If we want to move a rigid body, we need to change its position. The rate of change of a body's
             position is called velocity. Just like the position, the velocity of a body is also represented
@@ -73,7 +82,7 @@
         </p>
         <p>
             The order in which we apply the updates to the position, velocity, and acceleration matters a lot to
-            the accuracy of the final result. There are many ways to calculate the numerical integration, but one of the most
+            the accuracy of the final result. There are many techiques for numerical integration, but one of the most
             popular and simple methods is called the <em>Semi-implicit Euler</em>. With this method, we first update the
             acceleration (if necessary), then apply the updated acceleration to the velocity, and finally apply the updated
             velocity to the position.
@@ -104,21 +113,36 @@ MainLoop.setUpdate((delta) =&gt; {
     const deltaInSecs = delta / 1000;
     velocity = velocity.add(gravity.scale(deltaInSecs));
     position = position.add(velocity.scale(deltaInSecs));
+
     if(position.x + rectWidth &gt;= gameWidth) {
+        /*
+            If the right side of the body moves past the right side of the game area,
+            move it back and reverse its horizontal direction of movement
+        */
         let diff = position.x + rectWidth - gameWidth;
         position = new Vec2(position.x - diff, position.y);
         velocity = new Vec2(-velocity.x, velocity.y);
         rectColor = randomColor();
     }
+
     if(position.x &lt;= 0) {
+        /* 
+            If the left side of the body moves past the left side of the game area,
+            move it back and reverse its horizontal direction of movement
+        */
         let diff = position.x;
         position = new Vec2(position.x + diff, position.y);
         velocity = new Vec2(-velocity.x, velocity.y);
         rectColor = randomColor();
     }
+
     if(position.y + rectHeight &gt; gameHeight) {
+        /*
+            If the bottom side of the body moves below the bottom of the game area,
+            move it back and change its vertical direction of movement
+        */
         let diff = position.y + rectHeight - gameHeight;
-        position = new Vec2(position.x, gameHeight - rectHeight - diff);
+        position = new Vec2(position.x, position.y - 2 * diff);
         velocity = new Vec2(velocity.x, -velocity.y);
         rectColor = randomColor();
     }
@@ -187,14 +211,14 @@ function randomColor() {
         <p>
             When the body touches the left, right, or bottom side of the screen, we have to move it so that it back inside
             the game area. We do this by calculating how deep has the body gone outside the bounds of the game,
-            and pushing the object back by the same amount.
+            and pushing the object back by the same amount. Finally, we also reverse the direction of movement.
         </p>
         <p>
             With this implementation of basic physics, we're starting to reach the organizational limits of our code.
-            In the next chapter, we'll explore and implement the ECS pattern (Entity Component System), which will
+            In the next chapter, we'll explore and implement the ECS pattern (Entity-Component-System), which will
             allow us to organize our game code in a performant and extensible manner.
         </p>
-        <p><a href="../c7/">Chapter 7 - The Entity Component System pattern</a></p>
+        <p><a href="../c7/">Chapter 7 - The Entity-Component-System pattern</a></p>
     </article>
     <script src="../prism.js"></script>
     <script src="../pixi.min.js"></script>
