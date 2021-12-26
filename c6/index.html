@@ -59,7 +59,7 @@
             Similarly to velocity, acceleration is the change of velocity over time. To apply acceleration to a body,
             we first need to add the acceleration to the velocity, then add the newly-changed velocity to the position.
             The most common form of acceleration that one might encounter is gravity, which is a constant acceleration in the
-            y axis only.
+            <span class="copyable-formula">y</span><math><mi>y</mi></math> axis only.
         </p>
         <p>
             In mathetmatics, the practice of summing small bits of data to find a total is called integration. In our case,
@@ -74,7 +74,7 @@
         <p>
             The order in which we apply the updates to the position, velocity, and acceleration matters a lot to
             the accuracy of the final result. There are many ways to calculate the numerical integration, but one of the most
-            popular and simple methods is called the Semi-implicit Euler. With this method, we first update the
+            popular and simple methods is called the <em>Semi-implicit Euler</em>. With this method, we first update the
             acceleration (if necessary), then apply the updated acceleration to the velocity, and finally apply the updated
             velocity to the position.
         </p>
@@ -137,18 +137,51 @@ function randomColor() {
 }</code></pre>
         <p>
             Let's note some of the changes from last time. The position and velocity of the body are instances of the
-            Vec2 class. The position of the body is updated every frame with the velocity, but a very important observation
-            is the fact that we're scaling the velocity by a variable called delta. This variable represents the time between frames
-            (in milliseconds), and for a game that runs at 60 frames per second, its value is roughly equal to 16.666. This
-            delta is then again divided by 1000 to change its unit from milliseconds to seconds, giving it a value of 0.016666.
-            Scaling the velocity with the delta is necessary here since the game loop runs at 60 frames per second, and if
-            we want to move an object by 30,50 units every second, we actually need to move it by 30*0.016666, 50*0.016666, or
-            0.50, 0.83333 every frame.
+            <strong class="code-inline">Vec2</strong> class. The position of the body is updated every frame with
+            the velocity, but a very important observation is the fact that we're scaling the velocity by a variable
+            called <strong class="code-inline">delta</strong>. This variable represents the time between frames
+            (in milliseconds), and for a game that runs at 60 frames per second, its value is roughly equal to
+            <em>16.666</em>. This delta is then again divided by 1000 to change its unit from milliseconds to seconds,
+            giving it a value of <em>0.016666</em>. Scaling the velocity with the delta is necessary here since the game
+            loop runs at 60 frames per second, and if we want to move an object by
+            <span class="copyable-formula">(30, 50)</span><math>
+                <mfenced>
+                    <mrow>
+                        <mn>30</mn>
+                        <mo>,</mo>
+                        <mn>50</mn>
+                    </mrow>
+                </mfenced>
+            </math>
+            units every second, we actually need to move it by
+            <span class="copyable-formula">(30 * 0.016666, 50 * 0.016666)</span><math>
+                <mfenced>
+                    <mrow>
+                        <mn>30</mn>
+                        <mo>&times;</mo>
+                        <mn>0.016666</mn>
+                        <mo>,</mo>
+                        <mn>50</mn>
+                        <mo>&times;</mo>
+                        <mn>0.016666</mn>
+                    </mrow>
+                </mfenced>
+            </math>, or
+            <span class="copyable-formula">(0.50, 0.83333)</span><math>
+                <mfenced>
+                    <mrow>
+                        <mn>0.50</mn>
+                        <mo>,</mo>
+                        <mn>0.83333</mn>
+                    </mrow>
+                </mfenced>
+            </math> units every frame.
         </p>
         <p>
             The velocity (gravity in this case) remains constant throughout the game loop. We achieve the bouncing effect by
             reversing the direction of the velocity when it touches the bottom of the screen. When the velocity is negative
-            and the body is moving upwards (recall that the y axis points downward), the gravity will constantly increase
+            and the body is moving upwards (recall that the <span class="copyable-formula">y</span><math><mi>y</mi></math>
+            axis points downward), the gravity will constantly increase
             the velocity until the body stops moving upward and starts falling again.
         </p>
         <p>
@@ -157,9 +190,9 @@ function randomColor() {
             and pushing the object back by the same amount.
         </p>
         <p>
-            We're starting to reach the organizational limits of our code. In the next chapter, we'll explore and
-            implement the ECS pattern (Entity Component System), which will allow us to organize our game code in
-            a performant and extensible manner.
+            With this implementation of basic physics, we're starting to reach the organizational limits of our code.
+            In the next chapter, we'll explore and implement the ECS pattern (Entity Component System), which will
+            allow us to organize our game code in a performant and extensible manner.
         </p>
         <p><a href="../c7/">Chapter 7 - The Entity Component System pattern</a></p>
     </article>
