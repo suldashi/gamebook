@@ -10,13 +10,215 @@
     <article>
         <h1>Chapter 7 - The Entity-Component-System pattern</h1>
         <p>
-            The Entity Component System (ECS) is an architectural pattern that is particularly
-            suited to video game development. In this article we'll implement a basic example
-            with multiple systems and components.
+            The Entity-Component-System (ECS) is an architectural pattern that is particularly
+            suited to video game development. In this article we'll explain the benefits of
+            using ECS and demonstrate a basic implementation using several systems and components.
+        </p>
+        <div id="pixi-root"></div>
+        <p>
+            In classic Object-oriented programming (OOP), a computer program is designed around objects,
+            which contain all the data and logic needed for their operation. These objects are
+            usually defined through classes, which serve as templates for creating many objects
+            of the same type. To enable code reuse, classes may inherit from each other, taking
+            on all the attributes and functionality of their parent class. However, because game
+            classes can have very complex behavior, they may need to inherit from many parent
+            classes at different stages, making it difficult to reason about
+            the inner workings of classes or extend them without risking breaking functionality
+            somewhere else. In addition, multiple inheritance is very complex, making lateral
+            code reuse difficult.
+        </p>
+        <p>
+            In keeping with the principle of favoring composition over inheritance, ECS takes
+            a completely different approach where instead of objects having complete control of
+            their internal behavior, the elements of a game are instead organized into <em>entities</em>.
+            Every "thing" in our game is an entity, and by default entities don't have any behavior,
+            but are just a collection of <em>components</em>.
+            Components are pieces of data that can be attached to an entity. Attaching a component
+            to an entity will give the entity whatever functionality the component is responsible for.
+            Components are matched to particular <em>systems</em>, and each system controls the logic
+            and behavior for a specific aspect of the game.
+        </p>
+        <p>
+            Let's demonstrate the ECS pattern by refactoring the bouncing ball demo we had in a previous
+            article.
+        </p>
+        <p>
+            We'll begin by creating our base <strong class="code-inline">Entity</strong>,
+            <strong class="code-inline">Component</strong>, and <strong class="code-inline">System</strong> classes.
+            All other components and systems will inherit from these base classes. We'll start by creating the
+            <strong class="code-inline">ecs</strong> directory. In this directory,
+            let's also create the <strong class="code-inline">entity.js</strong> and put the following code in it:
+        </p>
+        <pre><code class="language-js">export default class Entity {
+    constructor() {
+        this.components = [];
+    }
+
+    attachComponents(...components) {
+        this.components = [...this.components, ...components];
+    }
+
+    deleteComponents() {
+        for(const component of this.components) {
+            component.delete();
+        }
+        this.components = [];
+    }
+}</code></pre>
+        <p>
+            From the code, we can see than an entity is nothing but a collection of components. We can associate a component with
+            an entity by calling the entity's <strong class="code-inline">attachComponents()</strong> method. Unlike in
+            Object-oriented Programming where we can easily delete objects, deleting entities is a bit harder since its
+            components are loosely coupled and have to be deleted individually. For this reason the
+            <strong class="code-inline">Component</strong> class supports the <strong class="code-inline">delete()</strong>
+            method, and the <strong class="code-inline">Entity</strong> class has the <strong class="code-inline">deleteComponents()</strong>
+            method which will iterate across all attached components and call their <strong class="code-inline">delete()</strong>
+            method one by one.
+        </p>
+        <p>
+            In the <strong class="code-inline">ecs</strong> directory, let's also create the <strong class="code-inline">
+            component.js</strong> file and put the following code in it:
+        </p>
+        <pre><code class="language-js">export default class Component {
+    constructor() {
+        this.isDeleted = false;
+    }
+
+    delete() {
+        this.isDeleted = true;
+    }
+}</code></pre>
+        <p>
+            One important thing to note for the <strong class="code-inline">Component</strong> class is that calling
+            its <strong class="code-inline">delete()</strong> method only sets the <strong class="code-inline">isDeleted = true</strong>,
+            and it's the responsibility of the system that created the component to also safely delete it at the right time.
+            Generally we want to delete components at the end of a frame once everything else has been processed. 
+        </p>
+        <p>
+            Finally, let's also also create the <strong class="code-inline">
+            system.js</strong> file in the <strong class="code-inline">ecs</strong> directory, and put the following code in it:
+        </p>
+        <pre><code class="language-js">export default class System {
+    constructor() {
+        this.components = [];
+    }
+
+    update() {
+        // nothing here for now
+    }
+
+    deleteStaleComponents() {
+        this.components = this.components.filter(x => !x.isDeleted);
+    }
+}</code></pre>
+        <p>
+            By itself the <strong class="code-inline">System</strong> class does nothing, but do note the
+            <strong class="code-inline">components</strong> variable, which hints that the system that
+            creates a component also manages it. The <strong class="code-inline">update()</strong> method
+            is also empty, but all other systems that inherit from this base class will override this method
+            to implement the core functionality of the system. It's important to note that this method
+            will be called by the game loop every frame, and this is how we'll drive the behavior of the entire
+            game engine. Finally, the <strong class="code-inline">deleteStaleComponents</strong> removes
+            from the list all components that have been set as deleted. This method will be called at the end
+            of each frame.
+        </p>
+        <p>
+            Now that we've created our base ECS classes, it's time to create a few more that will implement the
+            rules of the game. We'll first need to identify the  behaviors that were manifested by the bouncing ball.
+            The ball had three distinct behaviors: <ul>
+                <li>The ball had a position on the game world and moved according to velocity and acceleration</li>
+                <li>The ball was rendered in the screen with a particular color and shape</li>
+                <li>The ball bounced and changed color whenever it reached the edges of the game world</li>
+            </ul>
+            We'll need a system and its corresponding component for each of these behaviors.
+        </p>
+        <p>
+            The first component we'll create is the <strong class="code-inline">BodyComponent</strong>. Let's
+            create a <strong class="code-inline">physics</strong> directory, create a
+            <strong class="code-inline">bodyComponent.js</strong> file in this directory and
+            put the following code in it:
+        </p>
+        <pre><code class="language-js">import Component from '../ecs/component';
+import Vec2 from '../vec2';
+
+export default class BodyComponent extends Component {
+    constructor(posX, posY) {
+        super();
+        this.position = new Vec2(posX, posY);
+        this.velocity = new Vec2(200, 0);
+        this.acceleration = new Vec2(0, 500);
+        this.radius = 50;
+    }
+}</code></pre>
+        <p>
+            Like we mentioned earlier, components hold data for some aspect of our entities, in this case
+            data about the physical aspects of the entity. The acceleration and velocity have been hardcoded
+            to match the behavior of the previous article, but can be changed to whatever we like.
+        </p>
+        <p>
+            The <strong class="code-inline">PhysicsSystem</strong> will be responsible for moving the
+            bodies every frame. Let's create a <strong class="code-inline">physicsSystem.js</strong>
+            file, put it in the <strong class="code-inline">physics</strong> directory, and add the following
+            code in it:
+        </p>
+        <pre><code class="language-js">import System from '../ecs/system';
+import BodyComponent from './bodyComponent';
+
+export default class PhysicsSystem extends System {
+    constructor() {
+        super();
+    }
+
+    update(delta) {
+        for(const component of this.components) {
+            component.velocity = component.velocity.add(component.acceleration.scale(delta));
+            component.position = component.position.add(component.velocity.scale(delta));
+        }
+    }
+
+    createBodyComponent(posX, posY) {
+        const component = new BodyComponent(posX, posY);
+        this.components.push(component);
+        return component;
+    }
+}</code></pre>
+        <p>
+            As you can see, the <strong class="code-inline">PhysicsSystem</strong> is responsible for
+            creating instances of <strong class="code-inline">BodyComponent</strong> classes with
+            the <strong class="code-inline">createBodyComponent</strong> method. The system 
+            needs to store components locally so they can be iterated in the <strong class="code-inline">update()</strong>
+            method. We'll use this pattern in all of our systems and let the system handle the lifecycle
+            of the components its responsible for.
+        </p>
+        <p>
+            Similarly, we'll need a system and corresponding component for the feature that draws shapes
+            on the screen. Let's create a <strong class="code-inline">graphics</strong> directory, a 
+            <strong class="code-inline">bodyGraphicsComponent.js</strong> file, and let's put the following
+            code in it:
+        </p>
+        <pre><code class="language-js">import Component from "../ecs/component";
+
+export default class BodyGraphicsComponent extends Component {
+    constructor(bodyComponent, initialColor) {
+        super();
+        this.bodyComponent = bodyComponent;
+        this.color = initialColor;
+    }
+}</code></pre>
+        <p>
+            Like the <strong class="code-inline">BodyComponent</strong> we created earlier, the
+            <strong class="code-inline">BodyGraphicsComponent</strong> contains the data it needs to
+            draw the ball on the screen. However, in addition to the color we also need a reference to
+            the <strong class="code-inline">BodyComponent</strong> instance that we're trying to draw.
+            This is because the dimensions and position of the body are stored directly in the 
+            <strong class="code-inline">BodyComponent</strong> instance, and as the body moves we'll need
+            an updated position to know where to draw the ball on the screen.
         </p>
         <p><a href="../c8/">Chapter 8 - Input and controls</a></p>
     </article>
     <script src="../prism.js"></script>
+    <script src="../pixi.min.js"></script>
+    <script src="./bundle.js"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </body>

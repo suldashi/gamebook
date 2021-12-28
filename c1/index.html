@@ -53,27 +53,19 @@ alert(greeting);</code></pre>
             Once <strong class="code-inline">http-server</strong> is installed, we're ready to run our project. We can do that by typing this command in the terminal:
         </p>
         <pre><code class="language-shell">npx http-server</code></pre>
+        <p>
             If the server was started successfully, we can finally see our project in action. Open your web browser, and navigate to
-            <a href="http://localhost:8080"><strong class="code-inline">http://localhost:8080</strong></a>. If you see someting similar to the screenshot below, congratulations, you've successfully
-            set up the base on which we'll build our game!
+            <a href="http://localhost:8080"><strong class="code-inline">http://localhost:8080</strong></a>.
+            If you see someting similar to the screenshot below, congratulations, you've successfully set up the base on which we'll build our game!
         </p>
         <img class="fit-width" src="img/browser_success.png" alt="This screenshot from Google Chrome shows a successfully running web server that serves as the basis for our game">
         <p>
-            At this time, your project directory should look something like this:
-        </p>
-        <div>
-            <div class="file-display"><img src='img/folder-desktop.svg' width="16" height="16"> <span class='dir-row'>node_modules</span></div>
-            <div class="file-display"><img src='img/js-file.svg' width="16" height="16"> <span class='dir-row'>bundle.js</span></div>
-            <div class="file-display"><img src='img/html5-black.svg' width="16" height="16"> <span class='dir-row'>index.html</span></div>
-            <div class="file-display"><img src='img/text-file-line.svg' width="16" height="16"> <span class='dir-row'>package-lock.json</span></div>
-            <div class="file-display"><img src='img/text-file-line.svg' width="16" height="16"> <span class='dir-row'>package.json</span></div>
-        </div>
-        <p>
-            Note the new <strong class="code-inline">node_modules</strong> directory and the <strong class="code-inline">package-lock.json</strong> file.
-            <strong class="code-inline">node_modules</strong> is where the packages installed by <strong class="code-inline">npm</strong> are stored,
-            and the <strong class="code-inline">package-lock.json</strong> file is where detailed information about the installed packages
-            is stored. For the most part we won't need to ever interact with <strong class="code-inline">node_modules</strong> or
-            <strong class="code-inline">package-lock.json</strong> directly.
+            If you examine the project directory, you will find the newly-created <strong class="code-inline">node_modules</strong>
+            directory and the <strong class="code-inline">package-lock.json</strong> file.
+            <strong class="code-inline">node_modules</strong> is where the packages installed by <strong class="code-inline">npm</strong>
+            are stored, and the <strong class="code-inline">package-lock.json</strong> file is where detailed information about the
+            installed packagesis stored. For the most part we won't need to ever interact with
+            <strong class="code-inline">node_modules</strong> or <strong class="code-inline">package-lock.json</strong> directly.
         </p>
         <p>
             In the next chapter we will set up Webpack, which allows us to bundle multiple JavaScript into one single bundled file which is
