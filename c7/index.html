@@ -424,15 +424,14 @@ function createBouncingBall(posX, posY) {
             Like we mentioned earlier, entities are just a collection of components. When we create a ball and
             place it in the world, we create an instance of the <strong class="code-inline">Entity</strong> class
             and any other components it might need and then we create and attach any necessary components.
-            Once the components have been attached, the systems take care of applying the game rules. Every
-            iteration of the main loop calls the <strong class="code-inline">update()</strong> method of every
-            system, and this is how the world gets updated over time.
+            Once the components have been attached, the systems take care of applying the game rules. On every
+            frame we call the <strong class="code-inline">update()</strong> method of every system, and this is how
+            the world gets updated over time.
         </p>
         <p>
-            At the end of each iteration of the main loop, we call each system's
-            <strong class="code-inline">deleteStaleComponents()</strong> method, which will remove from the game
-            any component that we've deleted. In this example there are no such examples, but we'll leave this for the future
-            when we have more complex behavior.
+            At the end of each frame, we call each system's <strong class="code-inline">deleteStaleComponents()</strong>
+            method, which will remove from the game any component that we've deleted. In this example there are no
+            such examples, but we'll leave this for the future when we have more complex behavior.
         </p>
         <p>
             It's important to note that the order in which we update the systems matters for our game's rules.
