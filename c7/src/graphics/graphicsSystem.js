@@ -1,14 +1,15 @@
-import System from "../ecs/system";
-import BodyGraphicsComponent from "./bodyGraphicsComponent";
 const PIXI = window.PIXI;
 //import * as PIXI from "pixi.js";
+import System from "../ecs/system";
+import BodyGraphicsComponent from "./bodyGraphicsComponent";
+import config from '../config';
 
 export default class GraphicsSystem extends System {
     constructor() {
         super();
-        this.parentElement = document.getElementById("pixi-root");
-        this.width = 640;
-        this.height = 360;
+        this.parentElement = document.getElementById(config.rootElementId);
+        this.width = config.width;
+        this.height = config.height;
         this.app = new PIXI.Application({width: this.width, height: this.height});
         this.parentElement.appendChild(this.app.view);
         this.graphics = new PIXI.Graphics();
@@ -24,17 +25,8 @@ export default class GraphicsSystem extends System {
     }
 
     createGraphicsComponent(bodyComponent) {
-        let graphicsComponent = new BodyGraphicsComponent(bodyComponent, randomColor());
+        let graphicsComponent = new BodyGraphicsComponent(bodyComponent);
         this.components.push(graphicsComponent);
         return graphicsComponent;
     }
-}
-
-
-
-function randomColor() {
-    let red = Math.floor(Math.random()*256);
-    let green = Math.floor(Math.random()*256);
-    let blue = Math.floor(Math.random()*256);
-    return (red << 16) + (green << 8) + blue;
 }

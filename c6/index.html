@@ -109,10 +109,10 @@ document.getElementById("pixi-root").appendChild(app.view);
 const obj = new PIXI.Graphics();
 app.stage.addChild(obj);
 
-MainLoop.setUpdate((delta) =&gt; {
-    const deltaInSecs = delta / 1000;
-    velocity = velocity.add(gravity.scale(deltaInSecs));
-    position = position.add(velocity.scale(deltaInSecs));
+MainLoop.setUpdate((deltaInMs) =&gt; {
+    const delta = deltaInMs / 1000;
+    velocity = velocity.add(gravity.scale(delta));
+    position = position.add(velocity.scale(delta));
     if(position.x + radius &gt;= gameWidth) {
         /*
             If the right side of the body moves past the right side of the game area,
@@ -160,12 +160,13 @@ function randomColor() {
             Let's note some of the changes from last time. The position and velocity of the body are instances of the
             <strong class="code-inline">Vec2</strong> class. The position of the body is updated every frame with
             the velocity, but a very important observation is the fact that we're scaling the velocity by a variable
-            called <strong class="code-inline">delta</strong>. This variable represents the time between frames
+            called <strong class="code-inline">delta</strong>. The <strong class="code-inline">deltaInMs</strong>
+            variable is the one that we actually get from the game loop, and it represents the time between frames
             (in milliseconds), and for a game that runs at 60 frames per second, its value is roughly equal to
-            <em>16.666</em>. This delta is then again divided by 1000 to change its unit from milliseconds to seconds,
-            giving it a value of <em>0.016666</em>. Scaling the velocity with the delta is necessary here since the game
-            loop runs at 60 frames per second, and if we want to move an object by
-            <span class="copyable-formula">(30, 50)</span><math>
+            <em>16.666</em>. We get delta we need by dividing <strong class="code-inline">deltaInMs</strong> by 1000 to
+            change its unit from milliseconds to seconds, and we get a value of <em>0.016666</em>. Scaling the velocity
+            with the delta is necessary here since the game loop runs at 60 frames per second, and if we want to move
+            an object by <span class="copyable-formula">(30, 50)</span><math>
                 <mfenced>
                     <mrow>
                         <mn>30</mn>

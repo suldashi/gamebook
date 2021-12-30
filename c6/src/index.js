@@ -17,10 +17,10 @@ document.getElementById("pixi-root").appendChild(app.view);
 const obj = new PIXI.Graphics();
 app.stage.addChild(obj);
 
-MainLoop.setUpdate((delta) => {
-    const deltaInSecs = delta / 1000;
-    velocity = velocity.add(gravity.scale(deltaInSecs));
-    position = position.add(velocity.scale(deltaInSecs));
+MainLoop.setUpdate((deltaInMs) => {
+    const delta = deltaInMs / 1000;
+    velocity = velocity.add(gravity.scale(delta));
+    position = position.add(velocity.scale(delta));
     if(position.x + radius >= gameWidth) {
         /*
             If the right side of the body moves past the right side of the game area,

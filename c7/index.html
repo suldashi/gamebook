@@ -199,11 +199,22 @@ export default class PhysicsSystem extends System {
         <pre><code class="language-js">import Component from "../ecs/component";
 
 export default class BodyGraphicsComponent extends Component {
-    constructor(bodyComponent, initialColor) {
+    constructor(bodyComponent) {
         super();
         this.bodyComponent = bodyComponent;
-        this.color = initialColor;
+        this.setRandomColor();
     }
+
+    setRandomColor() {
+        this.color = randomColor();
+    }
+}
+
+function randomColor() {
+    let red = Math.floor(Math.random()*256);
+    let green = Math.floor(Math.random()*256);
+    let blue = Math.floor(Math.random()*256);
+    return (red &lt;&lt; 16) + (green &lt;&lt; 8) + blue;
 }</code></pre>
         <p>
             Like the <strong class="code-inline">BodyComponent</strong> we created earlier, the
@@ -213,6 +224,234 @@ export default class BodyGraphicsComponent extends Component {
             This is because the dimensions and position of the body are stored directly in the 
             <strong class="code-inline">BodyComponent</strong> instance, and as the body moves we'll need
             an updated position to know where to draw the ball on the screen.
+        </p>
+        <p>
+            There are many ways that entities and components can communicate with each other, and in a future
+            article we'll examine a popular approach (the Event Bus) in more detail, but when we have
+            the opportunity to code the dependency between components directly, we should do it,
+            since the easiest and simplest way that components can communicate is for one to
+            hold a reference to the other and directly access its values.
+        </p>
+        <p>
+            The <strong class="code-inline">GraphicsSystem</strong> goes together with the
+            <strong class="code-inline">BodyGraphicsComponent</strong>, therefore we need
+            to create the <strong class="code-inline">graphicsSystem.js</strong> file and put it
+            in the <strong class="code-inline">physics</strong> directory. Let's also place the following
+            code in that file:
+        </p>
+        <pre><code class="language-js">import * as PIXI from "pixi.js";
+import System from "../ecs/system";
+import BodyGraphicsComponent from "./bodyGraphicsComponent";
+import config from '../config';
+
+export default class GraphicsSystem extends System {
+    constructor() {
+        super();
+        this.parentElement = document.getElementById(config.rootElementId);
+        this.width = config.width;
+        this.height = config.height;
+        this.app = new PIXI.Application({width: this.width, height: this.height});
+        this.parentElement.appendChild(this.app.view);
+        this.graphics = new PIXI.Graphics();
+        this.app.stage.addChild(this.graphics);
+    }
+
+    update() {
+        this.graphics.clear();
+        for(const component of this.components) {
+            this.graphics.beginFill(component.color);
+            this.graphics.drawCircle(component.bodyComponent.position.x, component.bodyComponent.position.y, component.bodyComponent.radius);
+        }
+    }
+
+    createGraphicsComponent(bodyComponent) {
+        let graphicsComponent = new BodyGraphicsComponent(bodyComponent);
+        this.components.push(graphicsComponent);
+        return graphicsComponent;
+    }
+}</code></pre>
+        <p>
+            The <strong class="code-inline">GraphicsSystem</strong> is responsible for creating
+            <strong class="code-inline">BodyGraphicsComponent</strong> instances but also for
+            setting up the <strong class="code-inline">PIXI</strong> instance and directly drawing
+            the graphics on the screen. The system itself holds many variables that it needs to do
+            its job, such as the width of the game, the root HTML element that carries the game, and
+            a few more. It's very common for system to hold their own state that is independent from
+            the components.
+        </p>
+        <p>
+            Note how we're importing data from a file called<strong class="code-inline">config.js</strong>
+            that we have not defined yet. This file is useful for storing global settings. Let's create this file
+            and put the following code there:
+        </p>
+        <pre><code class="language-js">const config = {
+    width: 640,
+    height: 360,
+    rootElementId: 'pixi-root'
+}
+
+export default config;</code></pre>
+        <p>
+            The final feature we'll implement is the screen edge bounce. Like with the other features, we'll
+            need a system and a component to make it work. Let's start with the component first: create
+            a <strong class="code-inline">screenEdgeBounce</strong> directory, create a
+            <strong class="code-inline">screenEdgeBounceComponent.js</strong> file in it, and put the following
+            code in it:
+        </p>
+        <pre><code class="language-js">import Component from '../ecs/component';
+
+export default class ScreenEdgeBounceComponent extends Component {
+    constructor(bodyComponent, graphicsComponent) {
+        super();
+        this.bodyComponent = bodyComponent;
+        this.graphicsComponent = graphicsComponent;
+    }
+}</code></pre>
+        <p>
+            The <strong class="code-inline">ScreenEdgeBounceComponent</strong> does not have any data of its
+            own, but just hold references to the other two components we defined earlier. These components are
+            necessary because we need to know the
+            position of the ball to know when it reaches the edges of the screen, and we also need the
+            <strong class="code-inline">BodyGraphicsComponent</strong> instance so we can change the color of the ball
+            when it touches the edges.
+        </p>
+        <p>
+            You might be wondering if we actually need the
+            <strong class="code-inline">ScreenEdgeBounceComponent</strong> and if we could allow multiple systems
+            to access the same component directly. This is generally not advisable since we might want to apply
+            the system rules to only a small number of child components, for example we might not want all
+            <strong class="code-inline">BodyComponent</strong> instances to bounce around the walls, but only those
+            that we wrap with a <strong class="code-inline">ScreenEdgeBounceComponent</strong>. A component should
+            be used to add a single behavior to an entity, and since we're dealing with multiple behaviors, it's
+            best to use one component for each behavior, even if the components use the same underlying data.
+        </p>
+        <p>
+            Finally, we can create the <strong class="code-inline">ScreenEdgeBounceSystem</strong>. Let's create
+            the <strong class="code-inline">screenEdgeBounceSystem.js</strong> file in the
+            <strong class="code-inline">screenEdgeBounce</strong> directory and put the following code there:
+        </p>
+        <pre><code class="language-js">import System from '../ecs/system';
+import ScreenEdgeBounceComponent from './screenEdgeBounceComponent';
+import Vec2 from '../vec2';
+import config from '../config';
+
+export default class ScreenEdgeBounceSystem extends System {
+    constructor() {
+        super();
+        this.width = config.width;
+        this.height = config.height;
+    }
+
+    update() {
+        
+        for(const component of this.components) {
+            const bodyComponent = component.bodyComponent;
+            const graphicsComponent = component.graphicsComponent;
+            if(bodyComponent.position.x + bodyComponent.radius &gt;= this.width) {
+                let diff = bodyComponent.position.x + bodyComponent.radius - this.width;
+                bodyComponent.position = new Vec2(bodyComponent.position.x - 2 * diff, bodyComponent.position.y);
+                bodyComponent.velocity = new Vec2(-bodyComponent.velocity.x, bodyComponent.velocity.y);
+                graphicsComponent.setRandomColor();
+            }
+            if(bodyComponent.position.x - bodyComponent.radius &lt;= 0) {
+                let diff = bodyComponent.position.x - bodyComponent.radius;
+                bodyComponent.position = new Vec2(bodyComponent.position.x - 2 * diff, bodyComponent.position.y);
+                bodyComponent.velocity = new Vec2(-bodyComponent.velocity.x, bodyComponent.velocity.y);
+                graphicsComponent.setRandomColor();
+            }
+            if(bodyComponent.position.y + bodyComponent.radius &gt; this.height) {
+                let diff = bodyComponent.position.y + bodyComponent.radius - this.height;
+                bodyComponent.position = new Vec2(bodyComponent.position.x, bodyComponent.position.y - 2 * diff);
+                bodyComponent.velocity = new Vec2(bodyComponent.velocity.x, -bodyComponent.velocity.y);
+                graphicsComponent.setRandomColor();
+            }
+        }
+    }
+
+    createScreenEdgeBounceComponent(bodyComponent, graphicsComponent) {
+        const component = new ScreenEdgeBounceComponent(bodyComponent, graphicsComponent);
+        this.components.push(component);
+        return component;
+    }
+}</code></pre>
+        <p>
+            The functionality of this system is the same as last time, if the ball touches the left, right, or
+            bottom edge of the screen, reverse its direction of movement, move it away from the edge, and change
+            the color of the ball. Note how we're using the <strong class="code-inline">config</strong> object
+            we declared earlier.
+        </p>
+        <p>
+            Now that we're done with the components and systems, it's time to try them out. In the
+            <strong class="code-inline">index.js</strong> file, let's put the following code:
+        </p>
+        <pre><code class="language-js">import * as MainLoop from 'mainloop.js';
+import PhysicsSystem from './physics/physicsSystem';
+import ScreenEdgeBounceSystem from './screenEdgeBounce/screenEdgeBounceSystem';
+import GraphicsSystem from './graphics/graphicsSystem';
+import Entity from './ecs/entity';
+
+let physicsSystem = new PhysicsSystem();
+let screenEdgeBounceSystem = new ScreenEdgeBounceSystem();
+let graphicsSystem = new GraphicsSystem();
+
+createBouncingBall(50, 50);
+createBouncingBall(200, 70);
+createBouncingBall(350, 90);
+createBouncingBall(500, 110);
+
+MainLoop.setUpdate((delta) =&gt; {
+    const deltaInSecs = delta / 1000;
+    physicsSystem.update(deltaInSecs);
+    screenEdgeBounceSystem.update();
+    
+    physicsSystem.deleteStaleComponents();
+    screenEdgeBounceSystem.deleteStaleComponents();
+}).setDraw(() =&gt; {
+    graphicsSystem.update();
+    graphicsSystem.deleteStaleComponents();
+});
+
+MainLoop.start();
+
+function createBouncingBall(posX, posY) {
+    let entity = new Entity();
+    let bodyComponent = physicsSystem.createBodyComponent(posX, posY);
+    let graphicsComponent = graphicsSystem.createGraphicsComponent(bodyComponent);
+    let screenEdgeBounceComponent = screenEdgeBounceSystem.createScreenEdgeBounceComponent(bodyComponent, graphicsComponent);
+    entity.attachComponents(bodyComponent, graphicsComponent, screenEdgeBounceComponent);
+}</code></pre>
+        <p>
+            Like we mentioned earlier, entities are just a collection of components. When we create a ball and
+            place it in the world, we create an instance of the <strong class="code-inline">Entity</strong> class
+            and any other components it might need and then we create and attach any necessary components.
+            Once the components have been attached, the systems take care of applying the game rules. Every
+            iteration of the main loop calls the <strong class="code-inline">update()</strong> method of every
+            system, and this is how the world gets updated over time.
+        </p>
+        <p>
+            At the end of each iteration of the main loop, we call each system's
+            <strong class="code-inline">deleteStaleComponents()</strong> method, which will remove from the game
+            any component that we've deleted. In this example there are no such examples, but we'll leave this for the future
+            when we have more complex behavior.
+        </p>
+        <p>
+            It's important to note that the order in which we update the systems matters for our game's rules.
+            In our case we updated the physics first, then we checked if the ball touched the edges. This allows
+            us to immediately react if the ball is touching the edges. As we add more systems for a more complex
+            game, it will be important to make a design decision in which order will the rules of the game will be applied.
+        </p>
+        <p>
+            One other detail to note is how the <strong class="code-inline">GraphicsSystem</strong> is updated
+            separately from the other systems. This is a feature provided by the <strong class="code-inline">MainLoop.js</strong>
+            library which is normally locked at a fixed frame rate (by default 60 frames per second). By
+            updating the <strong class="code-inline">GraphicsSystem</strong> during <strong class="code-inline">setDraw()</strong>
+            instead of <strong class="code-inline">setUpdate()</strong>, we can get potentially smoother graphics by refreshing
+            the screen as fast as we can.
+        </p>
+        <p>
+            We finally finished the implementation of the ECS pattern. We'll be using this pattern extensively
+            in the future, in general any new feature that we'll add will be implemented by adding new systems
+            and their corresponding components.
         </p>
         <p><a href="../c8/">Chapter 8 - Input and controls</a></p>
     </article>
