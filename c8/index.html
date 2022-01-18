@@ -1,0 +1,232 @@
+<!doctype html>
+<html>
+<head>
+    <title>Chapter 8 - Input and controls</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel='stylesheet' href="../prism.css">
+    <link rel='stylesheet' href="../style.css">
+</head>
+<body class="line-numbers">
+    <article>
+        <h1>Chapter 8 - Input and controls</h1>
+        <p>
+            An essential element of any video game is input, typically through a keyboard, mouse,
+            controller, or touch screen. In this article we'll explore the basics of keyboard
+            input and implement an example.
+        </p>
+        
+        <div id="pixi-root">
+            
+        </div>
+        <p><em>Press the WASD keys to move the square</em></p>
+        <p>
+            Anytime we interact with a web page, the page generates (or fires) a JavaScript
+            <em>event</em>. By attaching an <em>event handler</em> to the page, we can capture the
+            events and take the appropriate actions in our game. For handling keyboard input, the
+            most important events are the <strong class="code-inline">keydown</strong> event, which
+            is fired when a button on the keyboard is pressed, and the <strong class="code-inline">keyup</strong>
+            event, which is fired when a key is released. Naturally, when we press and release a
+            key, first the <strong class="code-inline">keydown</strong> event will be fired first, and then
+            <strong class="code-inline">keyup</strong> right after.
+        </p>
+        <p>
+            To capture these events, we must register callbacks on the global
+            <strong class="code-inline">window.onkeydown</strong> and
+            <strong class="code-inline">window.onkeyup</strong> properties. To try it out, add the
+            following code anywhere on your page:
+        </p>
+        <pre><code class="language-js">window.onkeydown = (ev) =&gt; {
+    console.log("PRESSED", ev);
+};
+
+window.onkeyup = (ev) =&gt; {
+    console.log("RELEASED", ev);
+};</code></pre>
+        <p>
+            The generated events have a few interesting properties that we are very interested
+            in. In particular, the <strong class="code-inline">code</strong> property is the one we need to
+            examine, since it contains a string that represents the exact physical key that was pressed. For
+            example, when we press the the <em>W</em> key, the event <strong class="code-inline">code</strong>
+            property will have a value of <strong class="code-inline">KeyW</strong>.
+        </p>
+        <figure>
+            <img src="kbevent.png" class="image-border" />
+            <figcaption class="image-caption">The browser's console after 6 events, three <em>keydown</em>
+                and three <em>keyup</em> events. Examining the properties shows that we pressed the <em>D</em>
+                key twice and then the <em>S</em> key once.
+            </figcaption>
+        </figure>
+        <p>
+            Now that we can detect which key has been pressed or released, we can start integrating keyboard
+            controls in our game. We'll use the ECS pattern which was described earlier. Let's create an
+            <strong class="code-inline">input</strong> directory, and in that directory let's also create
+            a <strong class="code-inline">keyboardInputComponent.js</strong> file. In this file let's put
+            the following code:
+        </p>
+        <pre><code class="language-js">import Component from '../ecs/component';
+
+export default class KeyboardInputComponent extends Component {
+    constructor(bodyComponent) {
+        super();
+        this.bodyComponent = bodyComponent;
+    }
+}</code></pre>
+        <p>
+            There not much here to explain except that the <strong class="code-inline">KeyboardInputComponent</strong>
+            has a <strong class="code-inline">BodyComponent</strong> as a dependency. This is the
+            <strong class="code-inline">BodyComponent</strong> that we'll be moving using the keyboard.
+        </p>
+        <p>
+            The component we just created will also need an appropriate system to handle it. Let's create a
+            <strong class="code-inline">keyboardInputSystem.js</strong> file with the following code in it:
+        </p>
+        <pre><code class="language-js">import System from '../ecs/system';
+import Vec2 from '../vec2';
+import KeyboardInputComponent from './keyboardInputComponent';
+
+export default class KeyboardInputSystem extends System {
+    constructor() {
+        super();
+        this.up = false;
+        this.down = false;
+        this.left = false;
+        this.right = false;
+        window.onkeydown = (event) => {
+            if(event.code === "KeyW") {
+                this.up = true;
+            }
+            else if(event.code === "KeyS") {
+                this.down = true;
+            }
+            else if(event.code === "KeyA") {
+                this.left = true;
+            }
+            else if(event.code === "KeyD") {
+                this.right = true;
+            }
+        };
+        window.onkeyup = (event) => {
+            if(event.code === "KeyW") {
+                this.up = false;
+            }
+            else if(event.code === "KeyS") {
+                this.down = false;
+            }
+            else if(event.code === "KeyA") {
+                this.left = false;
+            }
+            else if(event.code === "KeyD") {
+                this.right = false;
+            }
+        };
+    }
+
+    update() {
+        for(const component of this.components) {
+            let horVelocity = 0;
+            let verVelocity = 0;
+            let velocityValue = 200;
+            if(this.left && !this.right) {
+                horVelocity = -velocityValue;
+            }
+            else if(!this.left && this.right) {
+                horVelocity = velocityValue;
+            }
+            if(this.up && !this.down) {
+                verVelocity = -velocityValue;
+            }
+            else if(!this.up && this.down) {
+                verVelocity = velocityValue;
+            }
+            component.bodyComponent.velocity = new Vec2(horVelocity, verVelocity);
+        }
+    }
+
+    createKeyboardInputComponent(bodyComponent) {
+        const component = new KeyboardInputComponent(bodyComponent);
+        this.components.push(component);
+        return component;
+    }
+}</code></pre>
+        <p>
+            Let's go over the code and explain how it all works. Lines 8-11 contain the state of the controls,
+            meaning we can examine these variables and immediately know which buttons are currently pressed or not.
+            These variables also have names that are meaningful in our game, and represent which
+            direction can the square move.
+        </p>
+        <p>
+            Lines 12-39 contain the two event handlers. Both work similarly, they check the
+            <strong class="code-inline">code</strong> value of the event and set the appropriate
+            variable to true or false.
+        </p>
+        <p>
+            Lines 44-59 are the ones that set the velocity of the moving body. If 
+            <strong class="code-inline">this.left</strong> is <em>true</em> and
+            <strong class="code-inline">this.right</strong> is <em>false</em>, we give the body
+            a negative horizontal velocity (move it to the left) and vice versa. Similarly,
+            if <strong class="code-inline">this.up</strong> is <em>true</em> and
+            <strong class="code-inline">this.down</strong> is <em>false</em>, we give the body
+            a negative vertical velocity (move it upwards) and vice versa. We can set both the
+            horizontal and vertical directions independently, which allows us to move diagonally
+            as well.
+        </p>
+        <p>
+            We're now ready to use this system and component in our game. Let's update the
+            <strong class="code-inline">index.js</strong> by putting the following code there:  
+        </p>
+        <pre><code class="language-js">import * as MainLoop from 'mainloop.js';
+import KeyboardInputSystem from './input/keyboardInputSystem';
+import PhysicsSystem from './physics/physicsSystem';
+import GraphicsSystem from './graphics/graphicsSystem';
+import Entity from './ecs/entity';
+import config from './config';
+
+let keyboardInputSystem = new KeyboardInputSystem();
+let physicsSystem = new PhysicsSystem();
+let graphicsSystem = new GraphicsSystem();
+
+createPlayerRectangle(config.width / 2, config.height / 2);
+
+MainLoop.setUpdate((delta) => {
+    const deltaInSecs = delta / 1000;
+    keyboardInputSystem.update();
+    physicsSystem.update(deltaInSecs);
+
+    keyboardInputSystem.deleteStaleComponents();
+    physicsSystem.deleteStaleComponents();
+}).setDraw(() => {
+    graphicsSystem.update();
+    
+    graphicsSystem.deleteStaleComponents();
+});
+
+MainLoop.start();
+
+function createPlayerRectangle(posX, posY) {
+    let entity = new Entity();
+    let bodyComponent = physicsSystem.createBodyComponent(posX, posY);
+    let graphicsComponent = graphicsSystem.createGraphicsComponent(bodyComponent);
+    let keyboardInputComponent = keyboardInputSystem.createKeyboardInputComponent(bodyComponent);
+    entity.attachComponents(bodyComponent, graphicsComponent, keyboardInputComponent);
+}</code></pre>
+        <p>
+            The important thing to note in the above code is that the <strong class="code-inline">keyboardInputSystem</strong>
+            is the first thing that runs in each frame. If we handle the controls at a later time, we could run into
+            the situation where some parts of the game loop run with old controls and some with
+            new ones. If the controls are handled at the end of the loop, they'll always be at least
+            one frame behind, making our game a bit unresponsive, and for this reason the controls
+            are always handled first.
+        </p>
+        <p>
+            We're almost ready to make a complete game. In the next chapter, we'll explore how
+            to handle cases when two bodies touch each other and what do to when that happens.
+        </p>
+        <p><a href="../c9/">Chapter 9 - Collision detection</a></p>
+    </article>
+    <script src="../prism.js"></script>
+    <script src="../pixi.min.js"></script>
+    <script src="./bundle.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</body>
+</html>

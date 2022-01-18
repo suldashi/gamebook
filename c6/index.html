@@ -200,11 +200,11 @@ function randomColor() {
             </math> units every frame.
         </p>
         <p>
-            The velocity (gravity in this case) remains constant throughout the game loop. We achieve the bouncing effect by
+            The acceleration (gravity in this case) remains constant throughout the game loop. We achieve the bouncing effect by
             reversing the direction of the velocity when it touches the bottom of the screen. When the velocity is negative
             and the body is moving upwards (recall that the <span class="copyable-formula">y</span><math><mi>y</mi></math>
-            axis points downward), the gravity will constantly increase
-            the velocity until the body stops moving upward and starts falling again.
+            axis points downward), the gravity will constantly increase the velocity until the body stops moving upward and
+            starts falling again.
         </p>
         <p>
             When the body touches the left, right, or bottom side of the screen, we have to move it so that it back inside
