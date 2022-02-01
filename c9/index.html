@@ -1,17 +1,81 @@
 <!doctype html>
 <html>
 <head>
-    <title>Chapter 9 - Collision detection and handling</title>
+    <title>Chapter 9 - Collision detection and resolution</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel='stylesheet' href="../prism.css">
     <link rel='stylesheet' href="../style.css">
 </head>
 <body class="line-numbers">
     <article>
-        <h1>Chapter 9 - Collision detection and handling</h1>
-        <div id="pixi-root">
-         
-        <p><a href="../c10/">Chapter 10 - Timing and scheduling</a></p>
+        <h1>Chapter 9 - Collision detection and resolution</h1>
+        <p>
+            Collision detection refers to all methods that detect when a body is touching another.
+            Examples are checking if a bullet hit an enemy, if a player is touching the floor, if
+            we're facing an NPC so we can talk to him, and many more. This feature is essential in
+            a lot of games, and in this article we'll describe how to implement it.
+        </p>
+        <div id="pixi-root"></div>
+        <p>
+            When detecting whether two bodies are touching, the method we choose depends on the
+            exact shape of the bodies. For better performance, we can choose specific shapes that
+            are fast to compute, and it just so happens that the rectangles we've been using are
+            such a shape. These are also called AABB (axis aligned bounding box), which means
+            the sides of the rectangle are parallel with the <span class="copyable-formula">x</span><math><mi>x</mi></math>
+            and <span class="copyable-formula">y</span><math><mi>y</mi></math> axes of the coordinate system.
+        </p>
+        <p>
+            Checking if two rectangles are touching is rather easy. If the rectanagles have an overlap
+            in both the <span class="copyable-formula">x</span><math><mi>x</mi></math> and 
+            <span class="copyable-formula">y</span><math><mi>y</mi></math> axes, then they overlap.
+        </p>
+        <figure>
+            <img src="rects.svg" class="image-border" />
+            <figcaption class="image-caption">Two rectangles are said to overlap in either the
+                <span class="copyable-formula">x</span><math><mi>x</mi></math> or
+                <span class="copyable-formula">y</span><math><mi>y</mi></math> axis
+                if the edges of one rectangles is between the two edges of the other rectangle.
+                In this figure, the four possible cases are shown: no overlap in either axis, overlap in the
+                <span class="copyable-formula">x</span><math><mi>x</mi></math> axis only, overlap in the
+                <span class="copyable-formula">y</span><math><mi>y</mi></math> axis only, and overlap in both the
+                <span class="copyable-formula">x</span><math><mi>x</mi></math> and
+                <span class="copyable-formula">y</span><math><mi>y</mi></math> axes.
+                In the final case when there's overlap in both axes the rectangles are visibly one on top of the other.
+            </figcaption>
+        </figure>
+        <p>
+            Let's make a function that check the overlap of two bodies. Given two <strong class="code-inline">BodyComponent</strong>
+            instances <strong class="code-inline">b1</strong> and <strong class="code-inline">b2</strong>,
+            the <strong class="code-inline">checkOverlap</strong> function will return true or false
+            depending if they overlap or not.
+        </p>
+        <pre><code class="language-js">function checkOverlap(b1, b2) {
+    if (b1.x + b1.width &lt; b2.x ||
+        b1.x &gt; b2.x + b2.width ||
+        b1.y + b1.height &lt; b2.y ||
+        b1.y &gt; b2.y + b2.y + b2.height) {
+        return false;
+    }
+    return true;
+}</code></pre>
+        <p>
+            The above code is actually a great example of a logical transformation. The following statements
+            are equivalent:
+            <ul>
+                <li>
+                    Assume the rectangles don't intersect. If one edge of a rectagle in an axis sits between the
+                    two edges of the other rectangle, we have a overlap in that axis. If we have an overlap in
+                    both axes, the rectangles intersect.
+                </li>
+                <li>
+                    Assume the rectangles intersect. If there is any axis where there is no overlap, then
+                    the rectangles don't intersect.
+                </li>
+            </ul>
+            It turns out the second options is both easier to program, easier to understand, and more performant,
+            therefore the code above represents the second option.
+        </p>
+    <p><a href="../c10/">Chapter 10 - Optimizing collision detection</a></p>
     </article>
     <script src="../prism.js"></script>
     <script src="../pixi.min.js"></script>
