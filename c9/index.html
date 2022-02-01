@@ -50,11 +50,11 @@
             depending if they overlap or not.
         </p>
         <pre><code class="language-js">function checkOverlap(b1, b2) {
-    if (b1.x + b1.width &lt; b2.x ||
-        b1.x &gt; b2.x + b2.width ||
-        b1.y + b1.height &lt; b2.y ||
-        b1.y &gt; b2.y + b2.y + b2.height) {
-        return false;
+    if (b1.x + b1.width &lt; b2.x ||    // if the right edge of b1 is on the left of the left edge of b2
+        b1.x &gt; b2.x + b2.width ||    // if the left edge of b1 is to the right of the right edge of b2
+        b1.y + b1.height &lt; b2.y ||   // if the bottom edge of b1 is above the top edge of b2
+        b1.y &gt; b2.y + b2.y + b2.height) {    // if the top edge of b1 is below the bottom edge of b2
+        return false;                   // then there's no overlap
     }
     return true;
 }</code></pre>
