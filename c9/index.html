@@ -11,8 +11,8 @@
         <h1>Chapter 9 - Collision detection and resolution</h1>
         <p>
             Collision detection refers to all methods that detect when a body is touching another.
-            Examples are checking if a bullet hit an enemy, if a player is touching the floor, if
-            we're facing an NPC so we can talk to him, and many more. This feature is essential in
+            Some examples are checking if a bullet hit an enemy, if a player is touching the floor, if
+            we're close enough to talk to an NPC, and many more. This feature is essential in
             a lot of games, and in this article we'll describe how to implement it.
         </p>
         <div id="pixi-root"></div>
@@ -50,17 +50,17 @@
             depending if they overlap or not.
         </p>
         <pre><code class="language-js">function checkOverlap(b1, b2) {
-    if (b1.x + b1.width &lt; b2.x ||    // if the right edge of b1 is to the left of the left edge of b2
-        b1.x &gt; b2.x + b2.width ||    // if the left edge of b1 is to the right of the right edge of b2
-        b1.y + b1.height &lt; b2.y ||   // if the bottom edge of b1 is above the top edge of b2
-        b1.y &gt; b2.y + b2.y + b2.height) {    // if the top edge of b1 is below the bottom edge of b2
-        return false;                   // then there's no overlap
+    if (b1.position.x + b1.width &lt; b2.position.x ||    // if the right edge of b1 is to the left of the left edge of b2
+        b1.position.x &gt; b2.position.x + b2.width ||    // if the left edge of b1 is to the right of the right edge of b2
+        b1.position.y + b1.height &lt; b2.position.y ||   // if the bottom edge of b1 is above the top edge of b2
+        b1.position.y &gt; b2.position.y + b2.height) {    // if the top edge of b1 is below the bottom edge of b2
+        return false;                                    // then there's no overlap
     }
     return true;
 }</code></pre>
         <p>
             The above code is actually a great example of a logical transformation. The following statements
-            are equivalent:
+            are equivalent, so we can use any of them as the basis for our function:
             <ul>
                 <li>
                     Assume the rectangles don't intersect. If one edge of a rectagle in an axis sits between the
@@ -75,6 +75,113 @@
             It turns out the second options is easier to program, easier to understand, and more performant,
             therefore the code above represents the second option.
         </p>
+        <p>
+            Now that we have our function, we can put it in a system and use it with an appropriate component.
+            Let's create a directory called <strong class="code-inline">collision</strong> and as usual,
+            let's create the component first, name it <strong class="code-inline">collisionComponent.js</strong>,
+            and let's also put the following code there:
+        </p>
+        <pre><code class="language-js">import Component from "../ecs/component";
+
+export default class CollisionComponent extends Component {
+    constructor(bodyComponent, collisionTag) {
+        super();
+        this.bodyComponent = bodyComponent;
+        this.collisionTag = collisionTag;
+        this.collisionCallbacks = {}
+    }
+
+    setCollisionCallback(targetCollisionTag, callback) {
+        this.collisionCallbacks[targetCollisionTag] = callback;
+    }
+}</code></pre>
+    <p>
+        Compared to the components in the previous chapters, the <strong class="code-inline">CollisionComponent</strong>
+        has a few additional properties that are worth mentioning, the first being the
+        <strong class="code-inline">collisionTag</strong>. This is a string that is attached
+        to a <strong class="code-inline">CollisionComponent</strong> and is used to differentiate
+        the types of objects that will be colliding, for example <strong class="code-inline">player</strong>,
+        <strong class="code-inline">enemy</strong>, <strong class="code-inline">food</strong>,
+        <strong class="code-inline">poison</strong>, etc.
+    </p>
+    <p>
+        The second important property is the <strong class="code-inline">setCollisionCallback</strong> method.
+        With this method we can set a callback that will trigger when the <strong class="code-inline">CollisionComponent</strong>
+        overlaps with another <strong class="code-inline">CollisionComponent</strong> that has
+        a <strong class="code-inline">collisionTag</strong> equal to <strong class="code-inline">targetCollisionTag</strong>.
+        These callbacks are stored in the <strong class="code-inline">collisionCallbacks</strong> object.
+    </p>
+    <p>
+        The approach of using <strong class="code-inline">collisionTag</strong> gives us two primary benefits.
+        The first is that it allows us to have different behavior when colliding with objects of different tags.
+        The second is that we can optimize the performance of the entire <strong class="code-inline">CollisionSystem</strong>
+        by skipping any two bodies with tags that don't have registered callbacks. For example, if nothing is supposed
+        to happen when a body tagged with <strong class="code-inline">food</strong> touches
+        another body tagged with <strong class="code-inline">food</strong>, then we can just skip the comparison
+        between these bodies. This optimization will be explored in a later chapter.
+    </p>
+    <p>
+        The <strong class="code-inline">CollisionSystem</strong> is what will actually be doing the overlap checks
+        between the <strong class="code-inline">CollisionComponent</strong> pairs. The code looks like this:
+    </p>
+    <pre><code class="language-js">import System from "../ecs/system";
+import CollisionComponent from "./collisionComponent";
+
+export default class CollisionSystem extends System {
+    constructor() {
+        super();
+    }
+
+    update() {
+        for(let i = 0; i &lt; this.components.length - 1; i++) {
+            for(let j = i + 1; j &lt; this.components.length; j++) {
+                if(checkOverlap(this.components[i].bodyComponent, this.components[j].bodyComponent)) {
+                    if(this.components[i].collisionCallbacks[this.components[j].collisionTag]) {
+                        this.components[i].collisionCallbacks[this.components[j].collisionTag]();
+                    }
+                    if(this.components[j].collisionCallbacks[this.components[i].collisionTag]) {
+                        this.components[j].collisionCallbacks[this.components[i].collisionTag]();
+                    }
+                }
+            }
+        }
+    }
+
+    createCollisionComponent(bodyComponent, collisionTag) {
+        let collisionComponent = new CollisionComponent(bodyComponent, collisionTag);
+        this.components.push(collisionComponent);
+        return collisionComponent;
+    }
+}
+
+function checkOverlap(b1, b2) {
+    if (b1.position.x + b1.width &lt; b2.position.x ||
+        b1.position.x &gt; b2.position.x + b2.width ||
+        b1.position.y + b1.height &lt; b2.position.y ||
+        b1.position.y &gt; b2.position.y + b2.height) {
+        return false;
+    }
+    return true;
+}</code></pre>
+    <p>
+        Like before, we can use the <strong class="code-inline">checkOverlap</strong> function to check if two bodies overlap.
+        However, this time it has been integrated into the <strong class="code-inline">CollisionSystem</strong>.
+        Importantly, the system checks all the <strong class="code-inline">CollisionComponent</strong> pairs,
+        and if they overlap, it triggers any registered callbacks.
+    </p>
+    <p>
+        Important to note is that by since we're comparing each pair of <strong class="code-inline">CollisionComponent</strong>s,
+        the number of comparisons is roughly equal to the square of the number of <strong class="code-inline">CollisionComponent</strong>s.
+        This number quickly becomes large, even with as little as 20-30 <strong class="code-inline">CollisionComponent</strong>s
+        there will be 400-900 comparisons. For this reason, we'll be improving and optimizing this code in the next chapter.
+        However, for demonstration purposes or for small examples the current code is fine.
+    </p>
+    <p>
+        Since collision detection is used extensively in a game, it's important to make it fast. Luckily,
+        there are plenty of opportunities to optimize the code. In the next chapter, we'll apply some
+        optimizations to the <strong class="code-inline">CollisionSystem</strong> that will make it
+        significantly faster.
+    </p>
     <p><a href="../c10/">Chapter 10 - Optimizing collision detection</a></p>
     </article>
     <script src="../prism.js"></script>
