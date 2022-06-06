@@ -1,14 +1,14 @@
 <!doctype html>
 <html>
 <head>
-    <title>Chapter 9 - Collision detection and resolution</title>
+    <title>Chapter 10 - Optimizing Collision Detection</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel='stylesheet' href="../prism.css">
     <link rel='stylesheet' href="../style.css">
 </head>
 <body class="line-numbers">
     <article>
-        <h1>Chapter 9 - Collision detection and resolution</h1>
+        <h1>Chapter 10 - Optimizing Collision Detection</h1>
         <p>
             Collision detection refers to all methods that detect when a body is touching another.
             Some examples are checking if a bullet hit an enemy, if a player is touching the floor, if
@@ -133,22 +133,17 @@ export default class CollisionSystem extends System {
     }
 
     update() {
-        const collisionInstances = [];
         for(let i = 0; i &lt; this.components.length - 1; i++) {
             for(let j = i + 1; j &lt; this.components.length; j++) {
                 if(checkOverlap(this.components[i].bodyComponent, this.components[j].bodyComponent)) {
                     if(this.components[i].collisionCallbacks[this.components[j].collisionTag]) {
-                        collisionInstances.push(this.components[i].collisionCallbacks[this.components[j].collisionTag]);
+                        this.components[i].collisionCallbacks[this.components[j].collisionTag]();
                     }
                     if(this.components[j].collisionCallbacks[this.components[i].collisionTag]) {
-                        collisionInstances.push(this.components[j].collisionCallbacks[this.components[i].collisionTag]);
+                        this.components[j].collisionCallbacks[this.components[i].collisionTag]();
                     }
                 }
             }
-        }
-
-        for(let collisionInstance of collisionInstances) {
-            collisionInstance();
         }
     }
 
@@ -172,28 +167,7 @@ function checkOverlap(b1, b2) {
         Like before, we can use the <strong class="code-inline">checkOverlap</strong> function to check if two bodies overlap.
         However, this time it has been integrated into the <strong class="code-inline">CollisionSystem</strong>.
         Importantly, the system checks all the <strong class="code-inline">CollisionComponent</strong> pairs,
-        and if they overlap, the corresponding callbacks are scheduled to be called after all pairs are checked.
-        This is done by storing the callbacks in the <strong class="code-inline">collisionInstances</strong> array,
-        and then calling them all once all pairs have been checked.
-    </p>
-    <p>
-        The reason why we don't call the callback immediately is that we want to make sure that the callback does
-        not change the state of the game, for example, by removing a body, or by changing the position of a body.
-    </p>
-    <p>
-        Let's imagine a scenario where a player touches two powerups at the same time, one that gives the player
-        a boost, and the other teleports the player to a new location. If we touch both powerups at the same time,
-        there is no way to know which one will be called first. If we call the boost powerup first, then the
-        teleport powerup will be called after the boost powerup, and the player will get both powerups. On the other
-        hand, if we call the teleport powerup first, the player will be teleported away, and by the time the
-        collision between the player and the boost is checked, they will no longer be touching and the player will
-        not get the boost.
-    </p>
-    <p>
-        Behavior like the one described above is a great source of subtle and arbitrary bugs. The order in which
-        we iterate through the pairs of <strong class="code-inline">CollisionComponent</strong>s is unpredictable,
-        and can depend upon many factors outside of our control. We must always be on the lookout for these
-        situations and make sure that our engine is both predictable and consistent.
+        and if they overlap, it triggers any registered callbacks.
     </p>
     <p>
         Important to note is that by since we're comparing each pair of <strong class="code-inline">CollisionComponent</strong>s,

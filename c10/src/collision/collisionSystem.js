@@ -7,22 +7,17 @@ export default class CollisionSystem extends System {
     }
 
     update() {
-        const collisionInstances = [];
         for(let i = 0; i < this.components.length - 1; i++) {
             for(let j = i + 1; j < this.components.length; j++) {
                 if(checkOverlap(this.components[i].bodyComponent, this.components[j].bodyComponent)) {
                     if(this.components[i].collisionCallbacks[this.components[j].collisionTag]) {
-                        collisionInstances.push(this.components[i].collisionCallbacks[this.components[j].collisionTag]);
+                        this.components[i].collisionCallbacks[this.components[j].collisionTag]();
                     }
                     if(this.components[j].collisionCallbacks[this.components[i].collisionTag]) {
-                        collisionInstances.push(this.components[j].collisionCallbacks[this.components[i].collisionTag]);
+                        this.components[j].collisionCallbacks[this.components[i].collisionTag]();
                     }
                 }
             }
-        }
-
-        for(let collisionInstance of collisionInstances) {
-            collisionInstance();
         }
     }
 
