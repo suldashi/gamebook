@@ -10,44 +10,59 @@
     <article>
         <h1>Chapter 10 - Optimizing Collision Detection</h1>
         <p>
-            Collision detection refers to all methods that detect when a body is touching another.
-            Some examples are checking if a bullet hit an enemy, if a player is touching the floor, if
-            we're close enough to talk to an NPC, and many more. This feature is essential in
-            a lot of games, and in this article we'll describe how to implement it.
+            In the previous chapter, we created a simple collision detection system that can detect
+            and take action whenever two bodies collide. However, the implementation is slow because
+            it has to check every pair of bodies in the system. In this article, we will optimize
+            the collision detection system by using a spatial partitioning system. This spatial partitioning
+            system will divide the world into a grid of cells, and then only check for collisions
+            between bodies in the same cell. This will speed up the collision detection system
+            by a factor of about 10 to 100.
         </p>
         <div id="pixi-root"></div>
         <p>
-            When detecting whether two bodies are touching, the method we choose depends on the
-            exact shape of the bodies. For better performance, we can choose specific shapes that
-            are fast to compute, and it just so happens that the rectangles we've been using are
-            such a shape. These are also called AABB (axis aligned bounding box), which means
-            the sides of the rectangle are parallel with the <span class="copyable-formula">x</span><math><mi>x</mi></math>
-            and <span class="copyable-formula">y</span><math><mi>y</mi></math> axes of the coordinate system.
+            The key insight behind this optimization is that collisions are not possible between
+            bodies that are "far" away. For this reason, if we can determine that two bodies are
+            not close enough to each other to possibly collide, we can skip the collision detection
+            step. This is called the <em>broad phase</em> of the collision detection system.
         </p>
         <p>
-            Checking if two rectangles are touching is rather easy. If the rectanagles have an overlap
-            in both the <span class="copyable-formula">x</span><math><mi>x</mi></math> and 
-            <span class="copyable-formula">y</span><math><mi>y</mi></math> axes, then they overlap.
+            In comparison, the <em>narrow phase</em> is what actually checks for collisions between
+            two bodies. In the previous article, we used the narrow phase exclusively on all pairs
+            of bodies. However, in this article we'll show how we can use the broad phase to
+            eliminate most of the pairs of bodies that we need to check. Therefore the final
+            collision detection system will work by first running the broad phase and placing
+            the bodies in different spatial cells. Then, the narrow phase will be run on each
+            cell in the grid.
+        </p>
+        <p>
+            There are many ways to implement the broad phase. We'll be implementing a uniform
+            grid, which is not the most efficient method, but it's still fast enough for most
+            games and it's the simplest method. If we get to a point where the uniform grid is
+            still not fast enough, there are algorithms such as QuadTree, KDtree, and others
+            which we can use. Until then, the uniform grid will serve us well.
+        </p>
+        <p>
+            The first thing we have to decide is the size of the grid. If we make the grid small,
+            we will have to check less pairs of bodies, but at the same time we will have to
+            spend more and more memory to hold the grid. The reverse is also true, the larger the
+            grid the more comparisons between bodies, but less memory used. Because modern computers
+            have an abundance of memory, it's best to stay on the safe side and make the grid relatively
+            small, a good rule of thumb is to make it roughly two or three times the size of the player
+            character. 
         </p>
         <figure>
-            <img src="rects.svg" class="image-border" />
-            <figcaption class="image-caption">Two rectangles are said to overlap in either the
-                <span class="copyable-formula">x</span><math><mi>x</mi></math> or
-                <span class="copyable-formula">y</span><math><mi>y</mi></math> axis
-                if the edges of one rectangles is between the two edges of the other rectangle.
-                In this figure, the four possible cases are shown: no overlap in either axis, overlap in the
-                <span class="copyable-formula">x</span><math><mi>x</mi></math> axis only, overlap in the
-                <span class="copyable-formula">y</span><math><mi>y</mi></math> axis only, and overlap in both the
-                <span class="copyable-formula">x</span><math><mi>x</mi></math> and
-                <span class="copyable-formula">y</span><math><mi>y</mi></math> axes.
-                In the final case when there's overlap in both axes the rectangles are visibly one on top of the other.
+            <img src="gridsize.png" class="image-border" />
+            <figcaption class="image-caption">In this screenshot, the player character (on the top-left)
+                is 64x64 units large. Each cell in the grid (green) is 150x150 units large.
             </figcaption>
         </figure>
         <p>
-            Let's make a function that check the overlap of two bodies. Given two <strong class="code-inline">BodyComponent</strong>
-            instances <strong class="code-inline">b1</strong> and <strong class="code-inline">b2</strong>,
-            the <strong class="code-inline">checkOverlap</strong> function will return true or false
-            depending if they overlap or not.
+            During each iteration of <strong class="code-inline">CollisionSystem.update()</strong>,
+            we will place every <strong class="code-inline">CollisionComponent</strong> in the appropriate
+            cell in the grid.
+        </p>
+        <p>
+
         </p>
         <pre><code class="language-js">function checkOverlap(b1, b2) {
     if (b1.position.x + b1.width &lt; b2.position.x ||    // if the right edge of b1 is to the left of the left edge of b2
