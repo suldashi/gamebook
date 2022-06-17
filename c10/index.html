@@ -48,7 +48,14 @@
             grid the more comparisons between bodies, but less memory used. Because modern computers
             have an abundance of memory, it's best to stay on the safe side and make the grid relatively
             small, a good rule of thumb is to make it roughly two or three times the size of the player
-            character. 
+            character.
+        </p>
+        <p>
+            A grid cell is defined by its top-left corner and size. For example, if we have a cell with
+            a top-left corner of (0, 0) and a size of 150, we can simply call this cell
+            <strong class="code-inline">0|0</strong>, the next cell to the right would be
+            <strong class="code-inline">150|0</strong>, and the next cell to the bottom would be
+            <strong class="code-inline">150|150</strong>.
         </p>
         <figure>
             <img src="gridsize.png" class="image-border" />
@@ -57,88 +64,47 @@
             </figcaption>
         </figure>
         <p>
-            During each iteration of <strong class="code-inline">CollisionSystem.update()</strong>,
-            we will place every <strong class="code-inline">CollisionComponent</strong> in the appropriate
-            cell in the grid.
+            The next step is to create a function that will calculate which cells does a body
+            fit into. Given a BodyComponent, we can calculate the cell (or cells) that the body fits into.
+            The body can fit into multiple cells in the case where it is larger than the size of a cell, or
+            if it sits between multiple cells.
         </p>
-        <p>
+        <pre><code class="language-js">function calculateCells(bodyComponent) {
+    const cellSize = 150;
+    const xCells = [];
+    const yCells = [];
+    const calculatedCells = [];
 
-        </p>
-        <pre><code class="language-js">function checkOverlap(b1, b2) {
-    if (b1.position.x + b1.width &lt; b2.position.x ||    // if the right edge of b1 is to the left of the left edge of b2
-        b1.position.x &gt; b2.position.x + b2.width ||    // if the left edge of b1 is to the right of the right edge of b2
-        b1.position.y + b1.height &lt; b2.position.y ||   // if the bottom edge of b1 is above the top edge of b2
-        b1.position.y &gt; b2.position.y + b2.height) {    // if the top edge of b1 is below the bottom edge of b2
-        return false;                                    // then there's no overlap
+    let maxX = Math.ceil((bodyComponent.position.x + bodyComponent.width)/cellSize)*cellSize;
+    let maxY = Math.ceil((bodyComponent.position.y + bodyComponent.height)/cellSize)*cellSize;
+
+    for(let x = bodyComponent.position.x; x &lt;= maxX; x+=cellSize) {
+        xCells.push(Math.floor(x/cellSize)*cellSize);
     }
-    return true;
+
+    for(let y = bodyComponent.position.y; y &lt;= maxY; y+=cellSize) {
+        yCells.push(Math.floor(y/cellSize)*cellSize);
+    }
+    
+    for(let i = 0;i&lt;xCells.length;i++) {
+        for(let j = 0;j&lt;yCells.length;j++) {
+            calculatedCells.push(`${xCells[i]}|${yCells[j]}`);
+        }
+    }
+
+    return calculatedCells;
 }</code></pre>
+
         <p>
-            The above code is actually a great example of a logical transformation. The following statements
-            are equivalent, so we can use any of them as the basis for our function:
-            <ul>
-                <li>
-                    Assume the rectangles don't intersect. If one edge of a rectagle in an axis sits between the
-                    two edges of the other rectangle, we have a overlap in that axis. If we have an overlap in
-                    both axes, the rectangles intersect.
-                </li>
-                <li>
-                    Assume the rectangles intersect. If there is any axis where there is no overlap, then
-                    the rectangles don't intersect.
-                </li>
-            </ul>
-            It turns out the second options is easier to program, easier to understand, and more performant,
-            therefore the code above represents the second option.
+            Using the <strong class="code-inline">calculateCells</strong> function, we can place each
+            <strong class="code-inline">CollisionComponent</strong> in the appropriate cells. This must be
+            done during each call of <strong class="code-inline">CollisionSystem.update()</strong>.
         </p>
         <p>
-            Now that we have our function, we can put it in a system and use it with an appropriate component.
-            Let's create a directory called <strong class="code-inline">collision</strong> and as usual,
-            let's create the component first, name it <strong class="code-inline">collisionComponent.js</strong>,
-            and let's also put the following code there:
+            Once all the <strong class="code-inline">CollisionComponent</strong>s are placed in the appropriate cells,
+            we iterate
         </p>
-        <pre><code class="language-js">import Component from "../ecs/component";
 
-export default class CollisionComponent extends Component {
-    constructor(bodyComponent, collisionTag) {
-        super();
-        this.bodyComponent = bodyComponent;
-        this.collisionTag = collisionTag;
-        this.collisionCallbacks = {}
-    }
-
-    setCollisionCallback(targetCollisionTag, callback) {
-        this.collisionCallbacks[targetCollisionTag] = callback;
-    }
-}</code></pre>
-    <p>
-        Compared to the components in the previous chapters, the <strong class="code-inline">CollisionComponent</strong>
-        has a few additional properties that are worth mentioning, the first being the
-        <strong class="code-inline">collisionTag</strong>. This is a string that is attached
-        to a <strong class="code-inline">CollisionComponent</strong> and is used to differentiate
-        the types of objects that will be colliding, for example <strong class="code-inline">player</strong>,
-        <strong class="code-inline">enemy</strong>, <strong class="code-inline">food</strong>,
-        <strong class="code-inline">poison</strong>, etc.
-    </p>
-    <p>
-        The second important property is the <strong class="code-inline">setCollisionCallback</strong> method.
-        With this method we can set a callback that will trigger when the <strong class="code-inline">CollisionComponent</strong>
-        overlaps with another <strong class="code-inline">CollisionComponent</strong> that has
-        a <strong class="code-inline">collisionTag</strong> equal to <strong class="code-inline">targetCollisionTag</strong>.
-        These callbacks are stored in the <strong class="code-inline">collisionCallbacks</strong> object.
-    </p>
-    <p>
-        The approach of using <strong class="code-inline">collisionTag</strong> gives us two primary benefits.
-        The first is that it allows us to have different behavior when colliding with objects of different tags.
-        The second is that we can optimize the performance of the entire <strong class="code-inline">CollisionSystem</strong>
-        by skipping any two bodies with tags that don't have registered callbacks. For example, if nothing is supposed
-        to happen when a body tagged with <strong class="code-inline">food</strong> touches
-        another body tagged with <strong class="code-inline">food</strong>, then we can just skip the comparison
-        between these bodies. This optimization will be explored in a later chapter.
-    </p>
-    <p>
-        The <strong class="code-inline">CollisionSystem</strong> is what will actually be doing the overlap checks
-        between the <strong class="code-inline">CollisionComponent</strong> pairs. The code looks like this:
-    </p>
     <pre><code class="language-js">import System from "../ecs/system";
 import CollisionComponent from "./collisionComponent";
 
@@ -148,17 +114,47 @@ export default class CollisionSystem extends System {
     }
 
     update() {
-        for(let i = 0; i &lt; this.components.length - 1; i++) {
-            for(let j = i + 1; j &lt; this.components.length; j++) {
-                if(checkOverlap(this.components[i].bodyComponent, this.components[j].bodyComponent)) {
-                    if(this.components[i].collisionCallbacks[this.components[j].collisionTag]) {
-                        this.components[i].collisionCallbacks[this.components[j].collisionTag]();
-                    }
-                    if(this.components[j].collisionCallbacks[this.components[i].collisionTag]) {
-                        this.components[j].collisionCallbacks[this.components[i].collisionTag]();
+        const cells = {};
+        const checkedPairs = {};
+        const collisions = [];
+
+        for(let i = 0; i &lt; this.components.length; i++) {
+            let collisionCells = calculateCells(this.components[i].bodyComponent);
+            for(let cellKey of collisionCells) {
+                if(!cells[cellKey]) {
+                    cells[cellKey] = [];
+                }
+                cells[cellKey].push(this.components[i]);
+            }
+        }
+        
+        // iterate over all cells, then check for collisions between each pair within that cell
+        for(let cell of Object.values(cells)) {
+            for(let i = 0; i &lt; cell.length - 1; i++) {
+                for(let j = i + 1; j &lt; cell.length; j++) {
+                    // only check if we haven't checked this pair already
+                    if(!(checkedPairs[`${cell[i].id}|${cell[j].id}]`])) {
+                        if(checkOverlap(cell[i].bodyComponent, cell[j].bodyComponent)) {
+
+                            /*  Add this pair to the checkedPairs array so we don't check it again.
+                                Both orientations need to be added to the array so that we don't
+                                miss collisions between the same pair of bodies. */
+                            checkedPairs[`${cell[i].id}|${cell[j].id}`] = checkedPairs[`${cell[j].id}|${cell[i].id}`] = true;
+    
+                            if(cell[i].collisionCallbacks[cell[j].collisionTag]) {
+                                collisions.push(cell[i].collisionCallbacks[cell[j].collisionTag]);
+                            }
+                            if(cell[j].collisionCallbacks[cell[i].collisionTag]) {
+                                collisions.push(cell[j].collisionCallbacks[cell[i].collisionTag]);
+                            }
+                        }
                     }
                 }
             }
+        }
+
+        for(let collisionInstance of collisions) {
+            collisionInstance();
         }
     }
 
@@ -169,35 +165,45 @@ export default class CollisionSystem extends System {
     }
 }
 
+function calculateCells(bodyComponent) {
+    const cellSize = 150;
+    const xCells = [];
+    const yCells = [];
+    const calculatedCells = [];
+
+    let maxX = Math.ceil((bodyComponent.position.x + bodyComponent.width)/cellSize)*cellSize;
+    let maxY = Math.ceil((bodyComponent.position.y + bodyComponent.height)/cellSize)*cellSize;
+
+    for(let x = bodyComponent.position.x; x &lt;= maxX; x+=cellSize) {
+        xCells.push(Math.floor(x/cellSize)*cellSize);
+    }
+
+    for(let y = bodyComponent.position.y; y &lt;= maxY; y+=cellSize) {
+        yCells.push(Math.floor(y/cellSize)*cellSize);
+    }
+    
+    for(let i = 0;i&lt;xCells.length;i++) {
+        for(let j = 0;j&lt;yCells.length;j++) {
+            calculatedCells.push(`${xCells[i]}|${yCells[j]}`);
+        }
+    }
+
+    return calculatedCells;
+}
+
 function checkOverlap(b1, b2) {
     if (b1.position.x + b1.width &lt; b2.position.x ||
-        b1.position.x &gt; b2.position.x + b2.width ||
+        b1.position.x > b2.position.x + b2.width ||
         b1.position.y + b1.height &lt; b2.position.y ||
-        b1.position.y &gt; b2.position.y + b2.height) {
+        b1.position.y > b2.position.y + b2.height) {
         return false;
     }
     return true;
 }</code></pre>
     <p>
-        Like before, we can use the <strong class="code-inline">checkOverlap</strong> function to check if two bodies overlap.
-        However, this time it has been integrated into the <strong class="code-inline">CollisionSystem</strong>.
-        Importantly, the system checks all the <strong class="code-inline">CollisionComponent</strong> pairs,
-        and if they overlap, it triggers any registered callbacks.
+        hello there
     </p>
-    <p>
-        Important to note is that by since we're comparing each pair of <strong class="code-inline">CollisionComponent</strong>s,
-        the number of comparisons is roughly equal to the square of the number of <strong class="code-inline">CollisionComponent</strong>s.
-        This number quickly becomes large, even with as little as 20-30 <strong class="code-inline">CollisionComponent</strong>s
-        there will be 400-900 comparisons. For this reason, we'll be improving and optimizing this code in the next chapter.
-        However, for demonstration purposes or for small examples the current code is fine.
-    </p>
-    <p>
-        Since collision detection is used extensively in a game, it's important to make it fast. Luckily,
-        there are plenty of opportunities to optimize the code. In the next chapter, we'll apply some
-        optimizations to the <strong class="code-inline">CollisionSystem</strong> that will make it
-        significantly faster.
-    </p>
-    <p><a href="../c10/">Chapter 10 - Optimizing collision detection</a></p>
+    <p><a href="../c11/">Chapter 11 - Timing, sequencing, and scheduling</a></p>
     </article>
     <script src="../prism.js"></script>
     <script src="../pixi.min.js"></script>
