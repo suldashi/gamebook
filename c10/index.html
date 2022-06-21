@@ -102,9 +102,23 @@
         </p>
         <p>
             Once all the <strong class="code-inline">CollisionComponent</strong>s are placed in the appropriate cells,
-            we iterate
+            we iterate through each cell and check for collisions between bodies in the cell. Since the expected number
+            of bodies inside a cell is relatively small, this is much faster than naively iterating through all
+            bodies in the system. Also important to note is that the behavior and signature of the 
+            <strong class="code-inline">CollisionSystem</strong> is the same as what we had before, so we can
+            simply replace the old class with the new and it will work as expected.
         </p>
-
+        <p>
+            Well, there is one bug we have introduced that we have to fix before it's a true replacement.
+            If a body is placed in two cells, it will be checked against all bodies in both cells. This is
+            expected, but if yet another body is placed in the same two cells, then the same pair of bodies
+            will be checked twice, the collision will be detected twice, and the collision callback will
+            called twice. This is not what we want, and the way to fix it is to keep a list of pairs that
+            we've already checked and only check pairs that are not in this list.
+        </p>
+        <p>
+            The code for the complete system is as follows:
+        </p>
     <pre><code class="language-js">import System from "../ecs/system";
 import CollisionComponent from "./collisionComponent";
 
@@ -128,19 +142,12 @@ export default class CollisionSystem extends System {
             }
         }
         
-        // iterate over all cells, then check for collisions between each pair within that cell
         for(let cell of Object.values(cells)) {
             for(let i = 0; i &lt; cell.length - 1; i++) {
                 for(let j = i + 1; j &lt; cell.length; j++) {
-                    // only check if we haven't checked this pair already
                     if(!(checkedPairs[`${cell[i].id}|${cell[j].id}]`])) {
                         if(checkOverlap(cell[i].bodyComponent, cell[j].bodyComponent)) {
-
-                            /*  Add this pair to the checkedPairs array so we don't check it again.
-                                Both orientations need to be added to the array so that we don't
-                                miss collisions between the same pair of bodies. */
                             checkedPairs[`${cell[i].id}|${cell[j].id}`] = checkedPairs[`${cell[j].id}|${cell[i].id}`] = true;
-    
                             if(cell[i].collisionCallbacks[cell[j].collisionTag]) {
                                 collisions.push(cell[i].collisionCallbacks[cell[j].collisionTag]);
                             }
@@ -201,7 +208,35 @@ function checkOverlap(b1, b2) {
     return true;
 }</code></pre>
     <p>
-        hello there
+        The system we just showed is organized as follows:
+    </p>
+    <ul>
+        <li>In line 54, we define the <strong class="code-inline">calculateCells</strong> function,
+        which calculates which cells does a body fit into</li>
+        <li>In lines 14 - 22, we take each body and place them in the appropriate cells using the 
+            <strong class="code-inline">calculateCells</strong> function</li>
+        <li>In lines 24 - 40, we iterate through each cell, and check each pair of bodies
+            in that cell for collisions. If a collision is detected, we add the collision callback to the
+            <strong class="code-inline">collisions</strong> array.</li>
+        <li>In line 29 we add the pair to the list of already checked collisions, to ensure that the same
+            pair of bodies is not checked twice. The actual check is done in line 27.</li>
+        <li>In lines 42 - 44, we apply the collision callbacks that we stored earlier in the 
+            <strong class="code-inline">collisions</strong> array.</li>
+    </ul>
+    <p>
+        At this point, our updates to the <strong class="code-inline">CollisionSystem</strong> are complete.
+        We can replace the old implemetation with the new one and we'll get a significant performance boost.
+    </p>
+    <p>
+        There are still two optimizations we can make to improve the performance even more. The first is 
+        to only check bodies if there are collision callbacks registered for it. For example, if we don't
+        have any callbacks registered when a food touches a poison, we don't need to compare this pair.
+        The second optimization is to only update the cells when the bodies inside them move. If a body
+        did not move, we can be sure that it will still fit in the same cells as before, so we can just
+        store these and use them again.
+    </p>
+    <p>
+        These optimizations are left as an exercise to the reader :)
     </p>
     <p><a href="../c11/">Chapter 11 - Timing, sequencing, and scheduling</a></p>
     </article>
