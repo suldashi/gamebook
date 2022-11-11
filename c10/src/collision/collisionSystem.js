@@ -12,12 +12,14 @@ export default class CollisionSystem extends System {
         const collisions = [];
 
         for(let i = 0; i < this.components.length; i++) {
+            this.components[i].clearCells();
             let collisionCells = calculateCells(this.components[i].bodyComponent);
             for(let cellKey of collisionCells) {
                 if(!cells[cellKey]) {
                     cells[cellKey] = [];
                 }
                 cells[cellKey].push(this.components[i]);
+                this.components[i].addCell(cellKey);
             }
         }
         

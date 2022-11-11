@@ -41,6 +41,7 @@ function createPlayerRectangle(posX, posY) {
     let graphicsComponent = graphicsSystem.createGraphicsComponent(bodyComponent);
     let keyboardInputComponent = keyboardInputSystem.createKeyboardInputComponent(bodyComponent);
     let collisionComponent = collisionSystem.createCollisionComponent(bodyComponent, "player");
+    let cellRenderComponent = graphicsSystem.createCollisionCellRenderingComponent(collisionComponent);
     collisionComponent.setCollisionCallback("food", () => {
         bodyComponent.width += 20;
         bodyComponent.height += 20;
@@ -52,7 +53,7 @@ function createPlayerRectangle(posX, posY) {
         bodyComponent.position = new Vec2(bodyComponent.position.x + 10, bodyComponent.position.y + 10);
     });
     graphicsComponent.setColor(255, 0, 0);
-    entity.attachComponents(bodyComponent, graphicsComponent, keyboardInputComponent, collisionComponent);
+    entity.attachComponents(bodyComponent, graphicsComponent, keyboardInputComponent, collisionComponent, cellRenderComponent);
 }
 
 function createFoodRectangle(posX, posY) {
@@ -62,11 +63,12 @@ function createFoodRectangle(posX, posY) {
     bodyComponent.height = 30;
     let graphicsComponent = graphicsSystem.createGraphicsComponent(bodyComponent);
     let collisionComponent = collisionSystem.createCollisionComponent(bodyComponent, "food");
+    let cellRenderComponent = graphicsSystem.createCollisionCellRenderingComponent(collisionComponent);
     collisionComponent.setCollisionCallback("player", () => {
         bodyComponent.position = new Vec2(randomInt(0,config.width), randomInt(0,config.height));
     });
     graphicsComponent.setColor(0, 255, 0);
-    entity.attachComponents(bodyComponent, graphicsComponent, collisionComponent);
+    entity.attachComponents(bodyComponent, graphicsComponent, collisionComponent, cellRenderComponent);
 }
 
 function createPoisonRectangle(posX, posY) {
@@ -76,11 +78,12 @@ function createPoisonRectangle(posX, posY) {
     bodyComponent.height = 30;
     let graphicsComponent = graphicsSystem.createGraphicsComponent(bodyComponent);
     let collisionComponent = collisionSystem.createCollisionComponent(bodyComponent, "poison");
+    let cellRenderComponent = graphicsSystem.createCollisionCellRenderingComponent(collisionComponent);
     collisionComponent.setCollisionCallback("player", () => {
         bodyComponent.position = new Vec2(randomInt(0,config.width), randomInt(0,config.height));
     });
     graphicsComponent.setColor(255, 255, 0);
-    entity.attachComponents(bodyComponent, graphicsComponent, collisionComponent);
+    entity.attachComponents(bodyComponent, graphicsComponent, collisionComponent, cellRenderComponent);
 }
 
 function randomInt(lowerBoundInclusive = 0, upperBoundInclusive = 100) {

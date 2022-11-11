@@ -51,6 +51,7 @@
         </p>
         <pre><code class="language-js">export default class Entity {
     constructor() {
+        this.id = crypto.randomUUID();
         this.components = [];
     }
 
@@ -73,7 +74,8 @@
             <strong class="code-inline">Component</strong> class supports the <strong class="code-inline">delete()</strong>
             method, and the <strong class="code-inline">Entity</strong> class has the <strong class="code-inline">deleteComponents()</strong>
             method which will iterate across all attached components and call their <strong class="code-inline">delete()</strong>
-            method one by one.
+            method one by one. Finally, an entity also has an <strong class="code-inline">id</strong>, allowing us to uniquely
+            identify any instance of the <strong class="code-inline">Entity</strong> class from another.
         </p>
         <p>
             In the <strong class="code-inline">ecs</strong> directory, let's also create the <strong class="code-inline">
@@ -81,6 +83,7 @@
         </p>
         <pre><code class="language-js">export default class Component {
     constructor() {
+        this.id = crypto.randomUUID();
         this.isDeleted = false;
     }
 
@@ -92,7 +95,10 @@
             One important thing to note for the <strong class="code-inline">Component</strong> class is that calling
             its <strong class="code-inline">delete()</strong> method only sets the <strong class="code-inline">isDeleted = true</strong>,
             and it's the responsibility of the system that created the component to also safely delete it at the right time.
-            Generally we want to delete components at the end of a frame once everything else has been processed. 
+            Generally we want to delete components at the end of a frame once everything else has been processed. Like
+            the <strong class="code-inline">Entity</strong>, each instance of the
+            <strong class="code-inline">Component</strong> class also has an <strong class="code-inline">id</strong>, and
+            while we're not using the <strong class="code-inline">id</strong> at the moment, it will be very useful in later chapters.
         </p>
         <p>
             Finally, let's also also create the <strong class="code-inline">

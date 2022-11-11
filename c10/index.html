@@ -15,10 +15,13 @@
             it has to check every pair of bodies in the system. In this article, we will optimize
             the collision detection system by using a spatial partitioning system. This spatial partitioning
             system will divide the world into a grid of cells, and then only check for collisions
-            between bodies in the same cell. This will speed up the collision detection system
-            by a factor of about 10 to 100.
+            between bodies in the same cell. In practice, this will speed up the collision detection
+            system by a factor of about 10 to 100.
         </p>
         <div id="pixi-root"></div>
+        <figcaption class="image-caption">Above, each cell is highlighted and the number of bodies
+            within is printed in the center.
+        </figcaption>
         <p>
             The key insight behind this optimization is that collisions are not possible between
             bodies that are "far" away. For this reason, if we can determine that two bodies are
@@ -102,7 +105,7 @@
         </p>
         <p>
             Once all the <strong class="code-inline">CollisionComponent</strong>s are placed in the appropriate cells,
-            we iterate through each cell and check for collisions between bodies in the cell. Since the expected number
+            we iterate through each cell and check for collisions between bodies within each cell. Since the expected number
             of bodies inside a cell is relatively small, this is much faster than naively iterating through all
             bodies in the system. Also important to note is that the behavior and signature of the 
             <strong class="code-inline">CollisionSystem</strong> is the same as what we had before, so we can
@@ -233,10 +236,7 @@ function checkOverlap(b1, b2) {
         have any callbacks registered when a food touches a poison, we don't need to compare this pair.
         The second optimization is to only update the cells when the bodies inside them move. If a body
         did not move, we can be sure that it will still fit in the same cells as before, so we can just
-        store these and use them again.
-    </p>
-    <p>
-        These optimizations are left as an exercise to the reader :)
+        store these and use them again. These optimizations are left as an exercise to the reader.
     </p>
     <p><a href="../c11/">Chapter 11 - Timing, sequencing, and scheduling</a></p>
     </article>

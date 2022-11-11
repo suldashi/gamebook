@@ -6,9 +6,18 @@ export default class CollisionComponent extends Component {
         this.bodyComponent = bodyComponent;
         this.collisionTag = collisionTag;
         this.collisionCallbacks = {}
+        this.cells = [];
     }
 
     setCollisionCallback(targetCollisionTag, callback) {
         this.collisionCallbacks[targetCollisionTag] = callback;
+    }
+
+    clearCells() {
+        this.cells = [];
+    }
+
+    addCell(cellKey) {
+        this.cells.push(cellKey);
     }
 }
