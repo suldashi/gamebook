@@ -1,14 +1,19 @@
 <!doctype html>
 <html>
 <head>
-    <title>Chapter 4 - The game loop</title>
+    <title>The game loop | JavaScript for Games</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel='stylesheet' href="../prism.css">
     <link rel='stylesheet' href="../style.css">
 </head>
 <body class="line-numbers">
-    <article>
-        <h1>Chapter 4 - The game loop</h1>
+    <header class="site-header">
+        <h3 class="main-column">
+            <a href="/">JavaScript for Games</a>
+        </h3>
+    </header>
+    <article class="site-content main-column">
+        <h1>The game loop</h1>
         <p>
             In a video game, the game loop is how the game advances forward in time. 
         </p>
@@ -59,36 +64,36 @@ document.body.appendChild(app.view);
 const obj = new PIXI.Graphics();
 app.stage.addChild(obj);
 MainLoop.setUpdate(() => {
-    obj.clear();
-    obj.beginFill(rectColor);
-    obj.drawRect(xPosition, yPosition, rectWidth, rectHeight);
-    xPosition += xVelocity;
-    yPosition += yVelocity;
-    if(xPosition + rectWidth === gameWidth) {
-        xVelocity = -1;
-        rectColor = randomColor();
-    }
-    if(xPosition === 0) {
-        xVelocity = 1;
-        rectColor = randomColor();
-    }
-    if(yPosition + rectHeight === gameHeight) {
-        yVelocity = -1;
-        rectColor = randomColor();
-    }
-    if(yPosition === 0) {
-        yVelocity = 1;
-        rectColor = randomColor();
-    }
+obj.clear();
+obj.beginFill(rectColor);
+obj.drawRect(xPosition, yPosition, rectWidth, rectHeight);
+xPosition += xVelocity;
+yPosition += yVelocity;
+if(xPosition + rectWidth === gameWidth) {
+    xVelocity = -1;
+    rectColor = randomColor();
+}
+if(xPosition === 0) {
+    xVelocity = 1;
+    rectColor = randomColor();
+}
+if(yPosition + rectHeight === gameHeight) {
+    yVelocity = -1;
+    rectColor = randomColor();
+}
+if(yPosition === 0) {
+    yVelocity = 1;
+    rectColor = randomColor();
+}
 });
 
 MainLoop.start();
 
 function randomColor() {
-    let red = Math.floor(Math.random()*256);
-    let green = Math.floor(Math.random()*256);
-    let blue = Math.floor(Math.random()*256);
-    return (red &lt;&lt; 16) + (green &lt;&lt; 8) + blue;
+let red = Math.floor(Math.random()*256);
+let green = Math.floor(Math.random()*256);
+let blue = Math.floor(Math.random()*256);
+return (red &lt;&lt; 16) + (green &lt;&lt; 8) + blue;
 }</code></pre>
         <p>
             Let's go through the code an explain some of the new things we added:
@@ -170,7 +175,8 @@ function randomColor() {
             Finally in line 46 we call <strong class='code-inline'>MainLoop.start()</strong> which starts the game loop.
             This loop will run continously until we either stop it or close the page.
         </p>
-        <p><a href="../c5/">Chapter 5 - Vectors</a></p>
+        <p><a href="../vectors/">Recommended reading: Vectors</a></p>
+        <p><a href="../physics-and-motion/">Next: Physics and motion</a></p>
     </article>
     <script src="../prism.js"></script>
     <script src="../pixi.min.js"></script>

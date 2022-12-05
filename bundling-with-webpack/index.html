@@ -1,20 +1,25 @@
 <!doctype html>
 <html>
 <head>
-    <title>Chapter 2 - Bundling and distributing JavaScript code using Webpack</title>
+    <title>Bundling our JavaScript for distribution using Webpack | JavaScript for Games</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel='stylesheet' href="../prism.css">
     <link rel='stylesheet' href="../style.css">
 </head>
 <body class="line-numbers">
-    <article>
-        <h1>Chapter 2 - Bundling and distributing JavaScript code using Webpack</h1>
+    <header class="site-header">
+        <h3 class="main-column">
+            <a href="/">JavaScript for Games</a>
+        </h3>
+    </header>
+    <article class="site-content main-column">
+        <h1>Bundling our JavaScript for distribution using Webpack</h1>
         <p>
-			In a web browser context, all JavaScript code that needs to be executed by the end user must ultimately be served through a
+            In a web browser context, all JavaScript code that needs to be executed by the end user must ultimately be served through a
             <strong class='code-inline'>&lt;script&gt;</strong> tag. While making our game, eventually we will have to split our code into multiple files,
             and it's not viable to use <strong class='code-inline'>&lt;script&gt;</strong> tags for each of them. This makes it necessary to have a build
             (or bundling) step, where all of our small JavaScript files are merged into a single file, which is then served to our players.
-		</p>
+        </p>
         <p>
             The tool we'll be using is called Webpack, and it can be easily installed using <strong class='code-inline'>npm</strong>. Type the following command
             in the terminal to install Webpack:
@@ -28,8 +33,9 @@
             process using commands typed in the terminal.
         </p>
         <p>
-            Before we're ready to use Webpack, we'll also need to create a small configuration file. Create a file with the <strong class='code-inline'>webpack.config.js</strong>
-            name in your project's root directory and place the following content in it:
+            Once Webpck is installed, there's one final step before we can use it. Let's create a small configuration file
+            with the <strong class='code-inline'>webpack.config.js</strong>
+            name in the project's root directory and place the following content in it:
         </p>
         <pre><code class="language-js">const path = require('path');
 
@@ -64,7 +70,7 @@ alert(greeting);</code></pre>
             In the next chapter, we'll get glimpses of our game by displaying shapes on the screen while also learning about the fundamentals
             of computer graphics.
         </p>
-        <p><a href="../c3/">Chapter 3 - Introduction to computer graphics using Pixi.js</a></p>
+        <p><a href="../introduction-to-graphics/">Next: Introduction to computer graphics using Pixi.js</a></p>
     </article>
     <script src="../prism.js"></script>
 </body>

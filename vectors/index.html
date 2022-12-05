@@ -1,14 +1,19 @@
 <!doctype html>
 <html>
 <head>
-    <title>Chapter 5 - Vectors</title>
+    <title>Vectors | JavaScript for Games</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel='stylesheet' href="../prism.css">
     <link rel='stylesheet' href="../style.css">
 </head>
 <body class="line-numbers">
-    <article>
-        <h1>Chapter 5 - Vectors</h1>
+    <header class="site-header">
+        <h3 class="main-column">
+            <a href="/">JavaScript for Games</a>
+        </h3>
+    </header>
+    <article class="site-content main-column">
+        <h1>Vectors</h1>
         <p>
             In game development, many physical and graphical objects require us to manipulate objects which
             have either a position or a direction in the game world. These objects are often best described
@@ -207,19 +212,19 @@
             </math>,
             the magnitude is equal to <span class="copyable-formula">sqrt(x*x + y*y)</span><math>
                 <msqrt>
-                  <mfenced>
+                <mfenced>
                     <mrow>
                         <msup>
                             <mi>x</mi>
                             <mn>2</mn>
                         </msup>
-                      <mo>+</mo>
-                      <msup>
+                    <mo>+</mo>
+                    <msup>
                         <mi>y</mi>
                         <mn>2</mn>
                     </msup>
                     </mrow>
-                  </mfenced>
+                </mfenced>
                 </msqrt>
             </math>. For example, the magnitude of the vector <span class="copyable-formula">(3, 4)</span><math>
                 <mfenced>
@@ -232,19 +237,19 @@
             </math>
             is equal to <span class="copyable-formula">sqrt(3*3 + 4*4)</span><math>
                 <msqrt>
-                  <mfenced>
+                <mfenced>
                     <mrow>
                         <msup>
                             <mn>3</mn>
                             <mn>2</mn>
                         </msup>
-                      <mo>+</mo>
-                      <msup>
+                    <mo>+</mo>
+                    <msup>
                         <mn>4</mn>
                         <mn>2</mn>
                     </msup>
                     </mrow>
-                  </mfenced>
+                </mfenced>
                 </msqrt>
             </math> or <span class="copyable-formula">sqrt(9 + 16)</span><math>
                 <msqrt>
@@ -252,7 +257,7 @@
                     <mo>+</mo>
                     <mn>16</mn>
                 </msqrt>
-              </math>
+            </math>
             or <span class="copyable-formula">sqrt(25)</span><math><msqrt><mn>25</mn></msqrt></math>
             which equals <span class="copyable-formula">5</span><math><mn>5</mn></math>.
         </p>
@@ -392,37 +397,37 @@
             and place it on the <strong class="code-inline">src</strong> directory, then add the following code to it:
         </p>
         <pre><code class="language-js">export default class Vec2 {
-    constructor(x, y) {
-        this.x = x;
-        this.y = y;
-        Object.freeze(this);
-    }
+constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    Object.freeze(this);
+}
 
-    add(otherVec) {
-        return new Vec2(this.x + otherVec.x, this.y + otherVec.y);
-    }
+add(otherVec) {
+    return new Vec2(this.x + otherVec.x, this.y + otherVec.y);
+}
 
-    subtract(otherVec) {
-        return new Vec2(this.x - otherVec.x, this.y - otherVec.y);
-    }
+subtract(otherVec) {
+    return new Vec2(this.x - otherVec.x, this.y - otherVec.y);
+}
 
-    scale(scalar) {
-        return new Vec2(scalar * this.x, scalar * this.y);
-    }
+scale(scalar) {
+    return new Vec2(scalar * this.x, scalar * this.y);
+}
 
-    magnitude() {
-        return Math.sqrt((this.x * this.x) + (this.y * this.y));
-        // return Math.sqrt(this.dot(this));    // equivalent to the line above
-    }
+magnitude() {
+    return Math.sqrt((this.x * this.x) + (this.y * this.y));
+    // return Math.sqrt(this.dot(this));    // equivalent to the line above
+}
 
-    normalize() {
-        let magnitude = this.magnitude();
-        return new Vec2(this.x / magnitude, this.y / magnitude);
-    }
+normalize() {
+    let magnitude = this.magnitude();
+    return new Vec2(this.x / magnitude, this.y / magnitude);
+}
 
-    dot(otherVector) {
-        return this.x * otherVector.x + this.y * otherVector.y;
-    }
+dot(otherVector) {
+    return this.x * otherVector.x + this.y * otherVector.y;
+}
 
 }</code></pre>
         <p>
@@ -437,7 +442,7 @@
             In the following chapters we'll make extensive use of this class when describing the position
             and motion of all game objects.
         </p>
-        <p><a href="../c6/">Chapter 6 - Physics and motion</a></p>
+        <p><a href="../physics-and-motion/">Next: Physics and motion</a></p>
     </article>
     <script src="../prism.js"></script>
     <script src="../pixi.min.js"></script>
