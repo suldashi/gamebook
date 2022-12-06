@@ -1,3 +1,10 @@
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
 body {
     display: flex;
     flex-direction: column;
@@ -13,13 +20,30 @@ body {
     background-color: white;
     border-bottom: 1px solid lightgray;
     position: fixed;
+    display: flex;
+    align-items: center;
     top: 0;
     left: 0;
     width: 100%;
-    height: 60px;
-    line-height: 60px;
+    height: 50px;
     font-size: 20px;
     z-index: 5;
+}
+
+@keyframes disappear-title {
+    from {max-width: 100px}
+    to {max-width: 0%;}
+  }
+
+.title-disappear {
+    display: inline-flex;
+    overflow: hidden;
+    max-width: 60px;
+    animation-name: disappear-title;
+    animation-duration: 0.75s;
+    animation-iteration-count: 1;
+    animation-delay: 1s;
+    animation-fill-mode: forwards;
 }
 
 a {
@@ -27,12 +51,17 @@ a {
     text-decoration: none;
 }
 
+ul {
+    margin-left: 0;
+    padding-left: 1em;
+}
+
 .site-header h3 {
     font-weight: normal;
 }
 
 .site-content {
-    margin-top: 80px;
+    margin-top: 70px;
     margin-bottom: 40px;
 }
 
@@ -40,6 +69,8 @@ a {
     width: 800px;
     margin-left: auto;
     margin-right: auto;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 .toc-section h5 {
@@ -50,6 +81,7 @@ a {
 h1, h2, h3, h4, h5 {
     padding: 0;
     margin: 0;
+    line-height: 1.25em;
     font-weight: 500;
 }
 
@@ -60,7 +92,6 @@ h1 {
 h2 {
     font-size: 24px;
 }
-
 
 canvas {
     max-width: 100%;
@@ -138,8 +169,18 @@ figure img {
 
 @media only screen and (max-width: 800px) {
 
+    .site-header {
+    }
+
     .main-column {
         width: 100%;
     }
 
+    p {
+        font-size: 14px;
+    }
+
+    code, pre {
+        font-size: 14px !important;
+    }
  }
