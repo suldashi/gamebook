@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+<head>
+    <title>Aesthetic Principles | JavaScript for Games</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel='stylesheet' href="../style.css">
+</head>
+<body>
+    <header class="site-header">
+        <h3 class="main-column">
+            <a href="/">J<span class="title-disappear">ava</span>S<span class="title-disappear">cript</span> for Games</a>
+        </h3>
+    </header>
+    <article class="site-content main-column">
+        <h1>Aesthetic principles</h1>
+        <p>
+            In addition to being useful as an end-product, computer code embodies
+            aesthetic value in on itself. Because code's form cannot be separated
+            from its function, the aesthetic principles of code are deeply tied
+            to its structure and organization. Therefore, I've decided to select
+            certain values and aesthetics which will set the long-term direction
+            of this project.
+        </p>
+        <ul>
+            <li><p>
+                <em>Radical composability</em> - the software must be wholly made of loosely
+                coupled components from the lowest levels all the way to the final deployment
+                and release. The major components, such as the graphics system, must be completely
+                removable without affecting the other systems at all. The game engine must
+                be completely independent from the game loop, to allow frame by frame
+                stepping or full-speed simulation using a while loop. The compiled engine
+                must be easily embeddable and deployable, from the most simple static
+                pages to the most advanced cloud platforms. In short, low level components
+                must have little to no visibility higher components or even of the greater
+                whole that they make up.
+            </p></li>
+            <li><p>
+                <em>Longetivity and timelessness</em> - the software must be compilable, runnable,
+                and easily available to potential future computing platforms. It must have structure
+                and function that is anticipated to be useful many decades from now. It
+                must minimize the amount of dependencies, especially ones that are anticipated
+                to become outdated or "rot". In case such dependencies, the data must flow
+                only in the direction from our software to the dependency, never the other
+                way around. When depending on external tools, the output of those tools must
+                be human readable, widely used, and easy to replicate.
+            </p></li>
+            <li><p>
+                <em>Low level abstractions</em> - the software should have only a few layers
+                of abstraction. This serves to keep the releases as small as possible and minimize
+                the time between loading the game and starting to play. In addition, this gives
+                the programmer the freedom to implement high-level abstractions as the game
+                needs, and not to have the abstractions imposed upon them.
+            </p></li>
+            <li><p>
+                <em>High transparency</em> - the engine should be easy to inspect and data flow
+                between components should be clear. In this vein, there should be no "magic"
+                frameworks or hidden abstractions, and communication between components should
+                be explicit and not through some automatic process.
+            </p></li>
+            <li><p>
+                <em>Instant and easy builds</em> - the software should minimize build times, or
+                possibly even run without any build step at all. Any build step should be as
+                simple as possible and easily replaced with any future build system that might
+                become popular in the future.
+            </p></li>
+            <li><p>
+                <em>Multiplayer first</em> - the engine must be directly runnable on servers
+                without any headless browser or dependency on a particular runtime. It must be
+                capable of operating in a client-server model, and not tightly bound to a particular
+                data-transfer technology. If used for single-player games, the multiplayer components
+                must be easy to remove.
+            </p></li>
+            <li><p>
+                <em>Moddability</em> - the engine must data-driven, meaning the gameplay
+                features or parameters must be read from user-supplied portable files, such as JSON.
+                Combined with modern cloud platforms, this will enable the players to make their
+                own games one feature at a time.
+            </p></li>
+        </ul>
+        <p><a href="../why-video-games-on-the-web/">Next: Why video games on the web?</a></p>
+    </article>
+</body>
+</html>
