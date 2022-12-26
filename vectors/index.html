@@ -397,37 +397,37 @@
             and place it on the <strong class="code-inline">src</strong> directory, then add the following code to it:
         </p>
         <pre><code class="language-js">export default class Vec2 {
-constructor(x, y) {
-    this.x = x;
-    this.y = y;
-    Object.freeze(this);
-}
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        Object.freeze(this);
+    }
 
-add(otherVec) {
-    return new Vec2(this.x + otherVec.x, this.y + otherVec.y);
-}
+    add(otherVec) {
+        return new Vec2(this.x + otherVec.x, this.y + otherVec.y);
+    }
 
-subtract(otherVec) {
-    return new Vec2(this.x - otherVec.x, this.y - otherVec.y);
-}
+    subtract(otherVec) {
+        return new Vec2(this.x - otherVec.x, this.y - otherVec.y);
+    }
 
-scale(scalar) {
-    return new Vec2(scalar * this.x, scalar * this.y);
-}
+    scale(scalar) {
+        return new Vec2(scalar * this.x, scalar * this.y);
+    }
 
-magnitude() {
-    return Math.sqrt((this.x * this.x) + (this.y * this.y));
-    // return Math.sqrt(this.dot(this));    // equivalent to the line above
-}
+    magnitude() {
+        return Math.sqrt((this.x * this.x) + (this.y * this.y));
+        // return Math.sqrt(this.dot(this));    // equivalent to the line above
+    }
 
-normalize() {
-    let magnitude = this.magnitude();
-    return new Vec2(this.x / magnitude, this.y / magnitude);
-}
+    normalize() {
+        let magnitude = this.magnitude();
+        return new Vec2(this.x / magnitude, this.y / magnitude);
+    }
 
-dot(otherVector) {
-    return this.x * otherVector.x + this.y * otherVector.y;
-}
+    dot(otherVector) {
+        return this.x * otherVector.x + this.y * otherVector.y;
+    }
 
 }</code></pre>
         <p>
@@ -442,7 +442,8 @@ dot(otherVector) {
             In the following chapters we'll make extensive use of this class when describing the position
             and motion of all game objects.
         </p>
-        <p><a href="../physics-and-motion/">Next: Physics and motion</a></p>
+        <p><a href="../physics-and-motion/">Recommended reading: Physics and motion</a></p>
+        <p><a href="../lines-and-linear-equations/">Next: Lines and Linear equations</a></p>
     </article>
     <script src="../prism.js"></script>
     <script src="../pixi.min.js"></script>
