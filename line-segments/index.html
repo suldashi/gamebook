@@ -1,0 +1,188 @@
+<!doctype html>
+<html>
+<head>
+    <title>Line segments | JavaScript for Games</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel='stylesheet' href="../prism.css">
+    <link rel='stylesheet' href="../style.css">
+</head>
+<body class="line-numbers">
+    <header class="site-header">
+        <h3 class="main-column">
+            <a href="..">J<span class="title-disappear">ava</span>S<span class="title-disappear">cript</span> for Games</a>
+        </h3>
+    </header>
+    <article class="site-content main-column">
+        <h1>Line segments</h1>
+        <p>
+            In mathematics, a line is an object which is infinitely long and completely straight. 
+            On the other had, a line segment (or just segment) is a straight line that is bounded
+            by two points in both sides. Both lines and segments are universally used in game
+            development because they represent many common phenomena, but here we'll be focusing
+            on segments since they're widely used when implementing game features.
+        </p>
+        <p>
+            In game development, the main use of segments is for a technique called raycasting, where
+            segments are first projected from one point to another, and then we can determine if an
+            object is between the two points. A good example is in First-person Shooters, where the
+            player fires a weapon in a direction and we want to determine if the shot hit a player
+            or not (and if it hit, the position of the hit).
+        </p>
+        <p>
+            Having said that, let's implement our LineSegment class. It should take
+            two vectors as input on the constructor (the start and end point), and it should have
+            a method to calculate the intersection point with another segment.
+            <a href="https://en.wikipedia.org/wiki/Intersection_(geometry)#Two_line_segments"
+            target="_blank">The mathematical technique of the intersection of two segments
+            is shown in this Wikipedia article.</a>
+        </p>
+        <p>
+            Let's create a <strong class="code-inline">lineSegment.js</strong> file and place it
+            on the root of the project, in the same place as the <strong class="code-inline">vec2.js</strong>
+            file, and put the following code there:
+        </p>
+        <pre><code class="language-js">import Vec2 from './vec2';
+    
+export default class LineSegment {
+    constructor(p1, p2) {
+        this.p1 = p1;
+        this.p2 = p2;
+        Object.freeze(this);
+    }
+
+    get slope() {
+        // Gets the slope of the line, which is in slope-intercept form y=ax+b.
+        // Infinity and -Infinity are valid slopes that correspond to vertical lines.
+        return (this.p1.x - this.p2.x)/(this.p1.y - this.p2.y);
+    }
+
+    calculateIntersection(otherSegment) {
+        // By convention, if two segments are parallel they don't have any intersection.
+        // This is mathematically incorrect but this behavior is not needed for gameplay.
+        // Technique taken from:
+        // https://en.wikipedia.org/wiki/Intersection_(geometry)#Two_line_segments
+
+        if(Math.abs(this.slope) === Math.abs(otherSegment.slope)) {
+            return null;
+        }
+        const k1 = this.p2.x - this.p1.x;
+        const q1 = otherSegment.p1.x - otherSegment.p2.x;
+        const z1 = otherSegment.p1.x - this.p1.x;
+        const k2 = this.p2.y - this.p1.y;
+        const q2 = otherSegment.p1.y - otherSegment.p2.y;
+        const z2 = otherSegment.p1.y - this.p1.y;
+
+        // Cramer's rule
+        const d = (k1*q2-k2*q1);
+        const s = (z1*q2-z2*q1)/d;
+        const t = (k1*z2-k2*z1)/d;
+        if(s&gt;=0 && s&lt;=1 && t&gt;=0 && t&lt;=1) {
+            return new Vec2(this.p1.x + s*(this.p2.x - this.p1.x),this.p1.y + s*(this.p2.y - this.p1.y));
+        }
+        return null;
+    }
+}</code></pre>
+        <p>
+            An explanation of how the solution is found: If the two segments overlap, that means
+            there's a point between the endpoints of the first segment that also is present between
+            the points of the second segment. Recall that we can get any point between two others
+            by using <a href="../linear-interpolation">Linear interpolation</a>, but in this case
+            the parameter of interpolation is unknown. Therefore, the parameters <strong class="code-inline">s</strong>
+            and <strong class="code-inline">t</strong> of the below system of equations is where
+            our overlap lies:
+        </p>
+        <p>
+            <div><math>
+                <mi>x</mi>
+                <mo>(</mo>
+                <mi>s</mi>
+                <mo>)</mo>
+                <mo>=</mo>
+                <mi>x</mi>
+                <mo>(</mo>
+                <mi>t</mi>
+                <mo>)</mo>
+            </math></div>
+            <div><math>
+                <mi>y</mi>
+                <mo>(</mo>
+                <mi>s</mi>
+                <mo>)</mo>
+                <mo>=</mo>
+                <mi>y</mi>
+                <mo>(</mo>
+                <mi>t</mi>
+                <mo>)</mo>
+            </math></div>
+            <div><math>
+                <mi>x</mi>
+                <mo>(</mo>
+                <mi>s</mi>
+                <mo>)</mo>
+                <mo>=</mo>
+                <mo>(</mo>
+                <mn>1</mn>
+                <mo>-</mo>
+                <mi>s</mi>
+                <mo>)</mo>
+                <msub><mi>x</mi><mn>1</mn></msub>
+                <mo>+</mo>
+                <mi>s</mi>
+                <msub><mi>x</mi><mn>2</mn></msub>
+            </math></div>
+            <div><math>
+                <mi>y</mi>
+                <mo>(</mo>
+                <mi>s</mi>
+                <mo>)</mo>
+                <mo>=</mo>
+                <mo>(</mo>
+                <mn>1</mn>
+                <mo>-</mo>
+                <mi>s</mi>
+                <mo>)</mo>
+                <msub><mi>y</mi><mn>1</mn></msub>
+                <mo>+</mo>
+                <mi>s</mi>
+                <msub><mi>y</mi><mn>2</mn></msub>
+            </math></div>
+            <div><math>
+                <mi>x</mi>
+                <mo>(</mo>
+                <mi>t</mi>
+                <mo>)</mo>
+                <mo>=</mo>
+                <mo>(</mo>
+                <mn>1</mn>
+                <mo>-</mo>
+                <mi>t</mi>
+                <mo>)</mo>
+                <msub><mi>x</mi><mn>3</mn></msub>
+                <mo>+</mo>
+                <mi>t</mi>
+                <msub><mi>x</mi><mn>4</mn></msub>
+            </math></div>
+            <div><math>
+                <mi>y</mi>
+                <mo>(</mo>
+                <mi>t</mi>
+                <mo>)</mo>
+                <mo>=</mo>
+                <mo>(</mo>
+                <mn>1</mn>
+                <mo>-</mo>
+                <mi>t</mi>
+                <mo>)</mo>
+                <msub><mi>y</mi><mn>3</mn></msub>
+                <mo>+</mo>
+                <mi>t</mi>
+                <msub><mi>y</mi><mn>4</mn></msub>
+            </math></div>
+        </p>
+        <p><a href="../raycasting/">Recommended reading: Raycasting</a></p>
+    </article>
+    <script src="../prism.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</body>
+</html>

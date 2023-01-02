@@ -48,13 +48,11 @@
             position is called velocity. Just like the position, the velocity of a body is also represented
             by a vector. A velocity of
             <span class="copyable-formula">(20, 50)</span><math>
-                <mfenced>
-                    <mrow>
-                        <mn>20</mn>
-                        <mo>,</mo>
-                        <mn>50</mn>
-                    </mrow>
-                </mfenced>
+                <mo>(</mo>
+                <mn>20</mn>
+                <mo>,</mo>
+                <mn>50</mn>
+                <mo>)</mo>
             </math>
             means the rigid body is moving by 20 units a second in the
             <span class="copyable-formula">x</span><math><mi>x</mi></math>
@@ -172,36 +170,30 @@ function randomColor() {
             change its unit from milliseconds to seconds, and we get a value of <em>0.016666</em>. Scaling the velocity
             with the delta is necessary here since the game loop runs at 60 frames per second, and if we want to move
             an object by <span class="copyable-formula">(30, 50)</span><math>
-                <mfenced>
-                    <mrow>
-                        <mn>30</mn>
-                        <mo>,</mo>
-                        <mn>50</mn>
-                    </mrow>
-                </mfenced>
+                <mo>(</mo>
+                <mn>30</mn>
+                <mo>,</mo>
+                <mn>50</mn>
+                <mo>)</mo>
             </math>
             units every second, we actually need to move it by
             <span class="copyable-formula">(30 * 0.016666, 50 * 0.016666)</span><math>
-                <mfenced>
-                    <mrow>
-                        <mn>30</mn>
-                        <mo>&times;</mo>
-                        <mn>0.016666</mn>
-                        <mo>,</mo>
-                        <mn>50</mn>
-                        <mo>&times;</mo>
-                        <mn>0.016666</mn>
-                    </mrow>
-                </mfenced>
+                <mo>(</mo>
+                <mn>30</mn>
+                <mo>&times;</mo>
+                <mn>0.016666</mn>
+                <mo>,</mo>
+                <mn>50</mn>
+                <mo>&times;</mo>
+                <mn>0.016666</mn>
+                <mo>)</mo>
             </math>, or
             <span class="copyable-formula">(0.50, 0.83333)</span><math>
-                <mfenced>
-                    <mrow>
-                        <mn>0.50</mn>
-                        <mo>,</mo>
-                        <mn>0.83333</mn>
-                    </mrow>
-                </mfenced>
+                <mo>(</mo>
+                <mn>0.50</mn>
+                <mo>,</mo>
+                <mn>0.83333</mn>
+                <mo>)</mo>
             </math> units every frame.
         </p>
         <p>
